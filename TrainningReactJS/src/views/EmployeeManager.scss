@@ -1,0 +1,136 @@
+@import "../../node_modules/bootstrap/scss/bootstrap";
+
+::placeholder {
+    font-size: 0.9rem;
+    align-items: center;
+    justify-content: center;
+
+}
+
+.employeeManager-container {
+    width: 70%;
+    margin: 0 auto;
+    .body-container {
+        background-color: rgb(253, 253, 253);
+
+        .controller {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid black;
+            padding: 0 20px;
+            height: 70px;
+
+            label {
+                font-weight: 700;
+            }
+
+            .button {
+                display: flex;
+
+                i {
+                    font-size: 1.8rem;
+                    cursor: pointer;
+                    color: rgb(131, 123, 123);
+
+                    &:hover {
+                        opacity: 0.8;
+                    }
+                }
+
+                .fa-plus-circle {
+                    margin-right: 20px;
+                    color: black;
+                }
+            }
+        }
+
+        .search {
+            display: flex;
+            padding: 20px 10px;
+
+            .total-employees {
+                width: 40%;
+            }
+
+            .search-input-box {
+                border-radius: 5px;
+                height: 30px;
+                background-color: white;
+                display: flex;
+                align-items: center;
+                padding: 0 5px;
+                border: 1px solid black;
+
+                i {
+                    cursor: pointer;
+                }
+
+                .input {
+                    border: none;
+                    outline: none;
+                    height: 100%;
+                    padding: 0 5px;
+                }
+            }
+        }
+
+        .navigation-box {
+            float: right;
+        }
+
+        .list-employees {
+            .label {
+                float: left;
+                margin-left: 20px;
+            }
+
+            .table {
+                i {
+                    cursor: pointer;
+                    color: blue;
+
+                    &:hover {
+                        opacity: 0.8;
+                    }
+                }
+
+                .fa-trash {
+                    margin-left: 12px;
+                    color: #333;
+                }
+
+                tbody {
+                    tr {
+                        &:nth-child(odd) {
+                            background: rgb(226, 226, 226);
+                        }
+
+                        &:hover {
+                            opacity: 0.8;
+                        }
+                    }
+                }
+            }
+
+        }
+    }
+}
+
+.modal-header {
+    background-color: rgb(74, 99, 209) !important;
+    color: white !important;
+}
+
+.label-upload {
+    // margin: 30px 20px;
+}
+
+
+.preview-img {
+    width: 40%;
+    height: 60%;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+}

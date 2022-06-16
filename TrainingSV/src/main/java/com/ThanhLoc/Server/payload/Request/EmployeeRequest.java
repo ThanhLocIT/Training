@@ -1,0 +1,23 @@
+package com.ThanhLoc.Server.payload.Request;
+
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+import java.time.LocalDate;
+
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+public class EmployeeRequest {
+    private Long id;
+    private String fullName;
+    private String address;
+    private String sex;
+    private int age;
+    private LocalDate day;
+    private int money;
+    private String phone;
+    private Long team_id;
+    private String image;
+}

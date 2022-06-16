@@ -1,0 +1,72 @@
+.container-infor-detail {
+    .hearder {
+        margin-top: 10px;
+        margin-left: 10px;
+        text-align: left;
+        display: flex;
+        justify-content: space-between;
+        border-bottom: 1px solid black;
+
+        .title {
+            text-transform: uppercase;
+            font-size: 2rem;
+            font-weight: 500;
+        }
+
+        .btn-add {
+            font-size: 2rem;
+            margin-right: 20px;
+
+            &:hover {
+                opacity: 0.8;
+            }
+        }
+    }
+
+    .body {
+        margin-top: 5px;
+
+        .infor {
+            width: 100%;
+
+            .detail {
+                margin: 1%% 5%;
+                width: 40%;
+                display: inline;
+                float: left;
+                background-color: rgb(240, 240, 240);
+                justify-content: center;
+                padding: 6px;
+                border-radius: 6px;
+            }
+
+            .table {
+                i {
+                    cursor: pointer;
+                    color: blue;
+
+                    &:hover {
+                        opacity: 0.8;
+                    }
+                }
+
+                .fa-trash {
+                    margin-left: 12px;
+                    color: #333;
+                }
+
+                tbody {
+                    tr {
+                        &:nth-child(odd) {
+                            background: rgba(243, 237, 237, 0.349);
+                        }
+
+                        &:hover {
+                            background: rgba(86, 132, 216, 0.288);
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

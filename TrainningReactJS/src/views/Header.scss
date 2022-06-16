@@ -1,0 +1,65 @@
+a {
+    color: #333;
+    text-decoration: none !important;
+}
+
+.header-container {
+    background-color: rgb(226, 222, 222);
+    display: flex;
+    height: 80px;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 20px;
+    width: 70%;
+    margin: 0 15%;
+    position: sticky;
+    top: 0px;
+
+    .left {
+        display: flex;
+        align-items: center;
+
+        .logo {
+            font-size: 2.4rem;
+            font-weight: 500;
+            color: rgb(187, 77, 77);
+        }
+
+        .title {
+            margin-left: 20px;
+        }
+    }
+
+    .right {
+        display: flex;
+
+        button {
+            border: none;
+            height: 36px;
+            border-radius: 6px;
+            cursor: pointer;
+
+            &:hover {
+                opacity: 0.8;
+            }
+        }
+
+        .btn-employee {
+            min-width: 80px;
+            margin-right: 30px;
+            color: rgb(43, 104, 184);
+        }
+
+
+
+        .btn-team {
+            color: rgb(43, 104, 184);
+            min-width: 50px;
+        }
+
+        .btn-active {
+            background-color: rgb(43, 104, 184);
+            color: white;
+        }
+    }
+}

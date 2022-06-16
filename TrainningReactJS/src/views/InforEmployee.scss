@@ -1,0 +1,103 @@
+.employee-infor-container {
+    width: 70%;
+    margin: 0 auto;
+
+    .header {
+        height: 70px;
+        background-color: rgb(253, 253, 253);
+        display: flex;
+        align-items: center;
+        padding: 25px;
+        border-bottom: 1px solid black;
+        justify-content: space-between;
+
+        .header-left {
+            color: #333;
+            font-size: 1.2rem;
+            text-transform: uppercase;
+            font-weight: 500;
+
+        }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+
+            i {
+                font-size: 2rem;
+                color: black;
+
+                &:hover {
+                    opacity: 0.8;
+                }
+            }
+
+            .btn-update {
+                margin-right: 20px;
+            }
+
+            .btn-delete {}
+        }
+    }
+
+    .body {
+        display: flex;
+        margin-top: 20px;
+
+        .body-left {
+            width: 25%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-right: 10px;
+
+            .avatar {
+                height: 400px;
+                width: 100%;
+                background-position: center;
+                background-repeat: no-repeat;
+                background-size: cover;
+            }
+
+            .more-infor {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+
+                .no-age {
+                    display: flex;
+                    justify-content: center;
+                    margin: 10px 10px;
+
+                    .no {
+                        background-color: rgb(215 120 120);
+                        font-size: 1.2rem;
+                        min-width: 70px;
+                        border-radius: 4px;
+                        margin-right: 10px;
+                    }
+
+                    .age {
+                        background-color: rgb(22, 180, 219);
+                        font-size: 1.2rem;
+                        min-width: 70px;
+                        border-radius: 4px;
+                    }
+                }
+
+                .sex {
+                    background-color: orange;
+                    font-size: 1.2rem;
+                    min-width: 90px;
+                    border-radius: 4px;
+                }
+            }
+        }
+    }
+
+    .body-right {
+        width: 75%;
+        height: 100%;
+    }
+}

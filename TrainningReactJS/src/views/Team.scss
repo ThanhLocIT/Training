@@ -1,0 +1,61 @@
+.container-team {
+    width: 70%;
+    margin: 0 auto;
+
+    .body-container {
+        background-color: rgb(253, 253, 253);
+
+        .controller {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid black;
+            padding: 0 20px;
+            height: 70px;
+
+            label {
+
+                font-weight: 700;
+            }
+
+            .button {
+                display: flex;
+
+                i {
+                    font-size: 1.8rem;
+                    cursor: pointer;
+                    color: rgb(131, 123, 123);
+
+                    &:hover {
+                        opacity: 0.8;
+                    }
+                }
+
+                .fa-plus-circle {
+                    margin-right: 20px;
+                    color: black;
+                    
+                }
+            }
+        }
+
+        .content {
+            display: flex;
+
+            .left {
+                padding-right: 30px;
+                width: 30%;
+                border-right: 4px solid rgb(165, 177, 174);
+
+                .table {}
+            }
+
+            .right {
+                padding-left: 30px;
+                width: 70%;
+
+                .table {}
+            }
+        }
+    }
+}
