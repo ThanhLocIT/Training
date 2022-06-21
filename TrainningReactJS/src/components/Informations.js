@@ -56,7 +56,7 @@ class Informations extends React.Component {
                                     <div className='detail'>Start Date: {Moment(inforEmployee.day).format('DD/MM/YYYY')}</div>
                                     <div className='detail'>Team: {inforEmployee.teamName}</div>
                                     <div className='detail'>Address: {inforEmployee.address}</div>
-                                    <div className='detail'>Sallary per hour: {inforEmployee.money} $</div>
+                                    <div className='detail'>Salary per hour: {inforEmployee.money} $</div>
                                 </>
                             }
                         </div>

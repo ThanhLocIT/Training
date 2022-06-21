@@ -3,6 +3,8 @@ package com.ThanhLoc.Server.Controller;
 import com.ThanhLoc.Server.ServiceEmployees.WorkingService;
 import com.ThanhLoc.Server.domain.Working;
 import com.ThanhLoc.Server.payload.Request.WorkingRequest;
+import com.ThanhLoc.Server.payload.Response.HourWorkingResponse;
+import com.ThanhLoc.Server.payload.Response.MoneyAdvancesResponse;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -42,4 +44,13 @@ public class WorkingController {
         }
         return ResponseEntity.ok(-1);
     }
+
+    @RequestMapping(path = "/get_hour_working", method = RequestMethod.GET)
+    public ResponseEntity<?> getHourWorking (@RequestParam Long id, int month, int year){
+        HourWorkingResponse a = new HourWorkingResponse();
+        a = svWorking.getHourWorking(id, month, year);
+        return ResponseEntity.ok(a);
+    }
+
+
 }

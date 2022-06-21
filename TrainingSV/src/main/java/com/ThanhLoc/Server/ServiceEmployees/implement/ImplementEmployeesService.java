@@ -53,7 +53,7 @@ public class ImplementEmployeesService implements EmployeesService {
 
     @Override
     public List<EmployeeResponse> listEmployees(int pageTotal) throws RuntimeException {
-        Sort sort = Sort.by("id");
+        Sort sort = Sort.by(Sort.Direction.DESC,"id");
         int size = 6;
         try {
             List<EmployeeResponse> list = new ArrayList<>();

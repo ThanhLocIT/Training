@@ -2,6 +2,7 @@ package com.ThanhLoc.Server.ServiceEmployees.implement;
 
 import com.ThanhLoc.Server.ServiceEmployees.WorkingService;
 import com.ThanhLoc.Server.domain.Working;
+import com.ThanhLoc.Server.payload.Response.HourWorkingResponse;
 import com.ThanhLoc.Server.repository.RepositoryWorking;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
@@ -17,7 +18,6 @@ public class ImplementWorking implements WorkingService {
 
     @Override
     public boolean insertWorking(Working working){
-        System.out.println(working);
         try {
             reWorking.save(working);
             return true;
@@ -57,6 +57,17 @@ public class ImplementWorking implements WorkingService {
             list = reWorking.findAllByEmployeeId(idEmployee);
             reWorking.deleteAll(list);
             return true;
+        }catch(Exception e){
+            throw new RuntimeException();
+        }
+    }
+
+    @Override
+    public HourWorkingResponse getHourWorking(Long id, int month, int year) throws RuntimeException {
+        try {
+            HourWorkingResponse hour = new HourWorkingResponse();
+            hour = reWorking.getHourWorking(id,month,year);
+            return hour;
         }catch(Exception e){
             throw new RuntimeException();
         }

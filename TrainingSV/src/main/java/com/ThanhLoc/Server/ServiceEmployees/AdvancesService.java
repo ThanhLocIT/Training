@@ -1,7 +1,7 @@
 package com.ThanhLoc.Server.ServiceEmployees;
 
 import com.ThanhLoc.Server.domain.Advances;
-import com.ThanhLoc.Server.domain.Working;
+import com.ThanhLoc.Server.payload.Response.MoneyAdvancesResponse;
 
 import java.util.List;
 
@@ -13,4 +13,6 @@ public interface AdvancesService  {
 
 
     boolean deleteAdvancesByEmployeeId(Long idEmployee) throws RuntimeException;
+
+    MoneyAdvancesResponse getMoneyAdvances(Long id, int month, int year) throws RuntimeException;
 }

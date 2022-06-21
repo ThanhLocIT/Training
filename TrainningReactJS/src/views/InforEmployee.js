@@ -129,7 +129,7 @@ class InforEmployee extends React.Component {
                                         >ADVANCES</Link>
                                     </li>
                                     <li className="nav-item">
-                                        <Link className={link_active === 'statistics' ? "nav-link active disabled" : "nav-link disabled"} to={`/employee/employee-infor/statistics?id=${id}`}
+                                        <Link className={link_active === 'statistics' ? "nav-link active disabled" : "nav-link"} to={`/employee/employee-infor/statistics?id=${id}`}
                                             onClick={() => this.linkActive("statistics")}
                                         >STATISTICS</Link>
                                     </li>
@@ -153,3 +153,5 @@ class InforEmployee extends React.Component {
 }
 
 export default InforEmployee;
+
+

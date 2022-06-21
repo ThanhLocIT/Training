@@ -252,7 +252,6 @@ class EmployeeManager extends React.Component {
         if (event.target.checked) {
             let stateDelEmployeeCopy = []
             this.setState({
-                //delAll: true,
                 delListEmployeeId: []
             })
 
@@ -339,7 +338,7 @@ class EmployeeManager extends React.Component {
                                             <input type="checkbox" onChange={(event) => this.hanldeCheckDelAll(event)} />
                                         </th>
                                         <th scope="col">No</th>
-                                        <th scope="col">fullName</th>
+                                        <th scope="col">FullName</th>
                                         <th scope="col">Phone</th>
                                         <th scope="col">Team</th>
                                         <th scope="col">Option</th>

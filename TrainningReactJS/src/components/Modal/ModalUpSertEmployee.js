@@ -6,7 +6,7 @@ import { toast } from 'react-toastify'
 import { upSertEmployeeService, uploadImage, getInforEmployeeServiceById } from '../../services/EmloyeesService'
 import { getTeamService } from '../../services/TeamService';
 import { emitter } from '../../utils/emitter'
-
+import validator from 'validator'
 class ModalUpSertEmployee extends React.Component {
     constructor(props) {
         super(props);
@@ -53,6 +53,7 @@ class ModalUpSertEmployee extends React.Component {
                 imageData: '',
                 selectedTeam: [],
                 selectedSex: [],
+                image: '',
             })
         })
     }
@@ -179,11 +180,15 @@ class ModalUpSertEmployee extends React.Component {
 
 
     handleSubmit = async () => {
-        let arr = ['fullName', 'address', 'sex', 'age', 'day', 'money', 'phone']
+        let arr = ['fullName', 'address', 'sex', 'age', 'day', 'money', 'phone', `team_id`]
         let err = false;
         for (let i = 0; i < arr.length; i++) {
             if (!this.state[arr[i]]) {
-                toast.error('Missing ' + arr[i]);
+                if (arr[i] === 'team_id') {
+                    toast.error('Missing Team');
+                } else {
+                    toast.error('Missing ' + arr[i]);
+                }
                 err = true;
                 break;
             }
@@ -197,6 +202,12 @@ class ModalUpSertEmployee extends React.Component {
         if (!err) {
             if (!/^[0-9]+$/.test(this.state.money)) {
                 toast.error("Please only enter numeric characters only for Money!");
+                err = true;
+            }
+        }
+        if (!err) {
+            if (!validator.isMobilePhone(this.state.phone)) {
+                toast.error("Invalid Phone !");
                 err = true;
             }
         }

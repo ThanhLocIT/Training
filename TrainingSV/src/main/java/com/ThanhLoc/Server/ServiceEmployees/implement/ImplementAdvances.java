@@ -2,6 +2,7 @@ package com.ThanhLoc.Server.ServiceEmployees.implement;
 
 import com.ThanhLoc.Server.ServiceEmployees.AdvancesService;
 import com.ThanhLoc.Server.domain.Advances;
+import com.ThanhLoc.Server.payload.Response.MoneyAdvancesResponse;
 import com.ThanhLoc.Server.repository.RepositoryAdvances;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
@@ -58,4 +59,16 @@ public class ImplementAdvances implements AdvancesService {
             throw new RuntimeException();
         }
     }
+
+    @Override
+    public MoneyAdvancesResponse getMoneyAdvances(Long id, int month, int year) throws RuntimeException {
+        try {
+            MoneyAdvancesResponse ad = new MoneyAdvancesResponse();
+            ad = reAdvances.getMoneyAdvances(id,month,year);
+            return ad;
+        }catch(Exception e){
+            throw new RuntimeException();
+        }
+    }
+
 }

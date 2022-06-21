@@ -3,6 +3,7 @@ package com.ThanhLoc.Server.Controller;
 import com.ThanhLoc.Server.ServiceEmployees.AdvancesService;
 import com.ThanhLoc.Server.domain.Advances;
 import com.ThanhLoc.Server.payload.Request.AdvancesRequest;
+import com.ThanhLoc.Server.payload.Response.MoneyAdvancesResponse;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -42,5 +43,12 @@ public class AdvancesController {
             return ResponseEntity.ok(-1);
         }
         return ResponseEntity.ok(-1);
+    }
+
+    @RequestMapping(path = "/get_money_advances", method = RequestMethod.GET)
+    public ResponseEntity<?> getMoneyAdvances (@RequestParam Long id, int month, int year){
+        MoneyAdvancesResponse a = new MoneyAdvancesResponse();
+        a = svAdvances.getMoneyAdvances(id, month, year);
+        return ResponseEntity.ok(a);
     }
 }
