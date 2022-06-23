@@ -1,6 +1,7 @@
 import './App.css';
 import EmployeeManager from './views/EmployeeManager'
 import InforEmployee from './views/InforEmployee'
+import Login from './views/Login'
 import Informations from './components/Informations';
 import Statistics from './components/Statistics';
 import Advance from './components/Advance';
@@ -10,14 +11,13 @@ import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { Routes, Route, Navigate } from 'react-router-dom';
 //import { ConnectedRouter as Router } from 'connected-react-router';
-import Header from '../src/views/Header';
 function App() {
   return (
     <>
       <div className="App">
-        <Header />
         <Routes>
-          <Route path='/employee' exact element={<EmployeeManager />} />
+          <Route path='/login' element={<Login />} />
+          <Route path='/employee' element={<EmployeeManager />} />
           <Route path='/team' element={<Team />} />
           <Route path='/employee/employee-infor' element={<InforEmployee />}>
             <Route path='/employee/employee-infor/infor' element={<Informations />}></Route>
@@ -41,8 +41,6 @@ function App() {
           draggable
           pauseOnHover
         />
-
-
       </div>
     </>
   );

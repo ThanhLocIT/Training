@@ -6,7 +6,7 @@ import com.ThanhLoc.Server.payload.Response.EmployeeResponse;
 import java.util.List;
 
 public interface EmployeesService {
-    boolean upSertEmployee (Employees employees);
+    int upSertEmployee (Employees employees);
     List<EmployeeResponse> listEmployees(int page);
     List<EmployeeResponse> listEmployeesByName(String name, int page);
     List<Employees> getTotalEmployee();
@@ -15,4 +15,6 @@ public interface EmployeesService {
     EmployeeResponse listEmployeesById(Long id) throws RuntimeException;
 
     boolean deleteListEmployees(List<Long> idEmployee) throws RuntimeException;
+
+    EmployeeResponse Login(String name, String phone) throws RuntimeException;
 }

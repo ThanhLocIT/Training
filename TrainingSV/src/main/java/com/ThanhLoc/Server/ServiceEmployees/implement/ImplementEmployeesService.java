@@ -1,9 +1,7 @@
 package com.ThanhLoc.Server.ServiceEmployees.implement;
 
 import com.ThanhLoc.Server.ServiceEmployees.EmployeesService;
-import com.ThanhLoc.Server.domain.Advances;
 import com.ThanhLoc.Server.domain.Employees;
-import com.ThanhLoc.Server.domain.Working;
 import com.ThanhLoc.Server.payload.Response.EmployeeResponse;
 import com.ThanhLoc.Server.repository.RepositoryAdvances;
 import com.ThanhLoc.Server.repository.RepositoryEmployees;
@@ -27,33 +25,46 @@ public class ImplementEmployeesService implements EmployeesService {
     private RepositoryWorking reWorking;
 
     @Override
-    public boolean upSertEmployee(Employees employees) {
+    public int upSertEmployee(Employees employees) {
         try {
+            String phone = employees.getPhone();
+            Employees res = reEmployee.findAllByPhone(phone);
             Employees employees1 = new Employees();
-            if(employees.getId() != null){
-                employees1.setId(employees.getId());
-                employees1.setFullName(employees.getFullName());
-                employees1.setAge(employees.getAge());
-                employees1.setTeam(employees.getTeam());
-                employees1.setAddress(employees.getAddress());
-                employees1.setDay(employees.getDay());
-                employees1.setMoney(employees.getMoney());
-                employees1.setPhone(employees.getPhone());
-                employees1.setImage(employees.getImage());
-                employees1.setSex(employees.getSex());
-                reEmployee.save(employees1);
-            }else{
-                reEmployee.save(employees);
+            if (employees.getId() != null) {
+                if (res == null ||  (res.getId() == employees.getId() && Integer.parseInt(res.getPhone()) == Integer.parseInt(employees.getPhone()))) {
+                    System.out.println(0);
+                    employees1.setId(employees.getId());
+                    employees1.setFullName(employees.getFullName());
+                    employees1.setPassWord(employees.getPassWord());
+                    employees1.setAge(employees.getAge());
+                    employees1.setTeam(employees.getTeam());
+                    employees1.setAddress(employees.getAddress());
+                    employees1.setDay(employees.getDay());
+                    employees1.setMoney(employees.getMoney());
+                    employees1.setPhone(employees.getPhone());
+                    employees1.setRole(employees.getRole());
+                    employees1.setImage(employees.getImage());
+                    employees1.setSex(employees.getSex());
+                    reEmployee.save(employees1);
+                }else{
+                    return 1;
+                }
+            } else {
+                if (res == null ) {
+                    reEmployee.save(employees);
+                }else{
+                    return 1;
+                }
             }
-            return true;
+            return 0;
         } catch (Exception e) {
-            return false;
+            return -1;
         }
     }
 
     @Override
     public List<EmployeeResponse> listEmployees(int pageTotal) throws RuntimeException {
-        Sort sort = Sort.by(Sort.Direction.DESC,"id");
+        Sort sort = Sort.by(Sort.Direction.DESC, "id");
         int size = 6;
         try {
             List<EmployeeResponse> list = new ArrayList<>();
@@ -104,7 +115,7 @@ public class ImplementEmployeesService implements EmployeesService {
             //Pageable domain
             Employees res = reEmployee.findById(id).orElse(null);
             EmployeeResponse employeeResponse = new EmployeeResponse();
-            if (res != null){
+            if (res != null) {
                 BeanUtils.copyProperties(res, employeeResponse);
                 employeeResponse.setTeam_id(res.getTeam().getId());
                 employeeResponse.setTeamName(res.getTeam().getName());
@@ -124,7 +135,7 @@ public class ImplementEmployeesService implements EmployeesService {
                 Employees result = reEmployee.findById(id).get();
                 listEmployee.add(result);
             });
-                reEmployee.deleteAll(listEmployee);
+            reEmployee.deleteAll(listEmployee);
             return true;
         } catch (Exception e) {
             throw new RuntimeException();
@@ -149,6 +160,23 @@ public class ImplementEmployeesService implements EmployeesService {
             List<Employees> list = new ArrayList<>();
             list = reEmployee.findAll();
             return list;
+        } catch (Exception e) {
+            throw new RuntimeException();
+        }
+    }
+
+    @Override
+    public EmployeeResponse Login(String phone, String passWord) throws RuntimeException {
+        try {
+            //Pageable domain
+            Employees res = reEmployee.Login(phone, passWord);
+            EmployeeResponse employeeResponse = new EmployeeResponse();
+            if (res.getId() != null) {
+                BeanUtils.copyProperties(res, employeeResponse);
+                employeeResponse.setTeam_id(res.getTeam().getId());
+                employeeResponse.setTeamName(res.getTeam().getName());
+            }
+            return employeeResponse;
         } catch (Exception e) {
             throw new RuntimeException();
         }

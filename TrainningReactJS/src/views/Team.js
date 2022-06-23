@@ -1,5 +1,7 @@
 import React from 'react';
+import { Navigate } from 'react-router-dom';
 import './Team.scss'
+import Header from './Header';
 import TeamDetail from '../components/Teamdetail';
 import { getTeamService } from '../services/TeamService';
 import ModalAddTeam from '../components/Modal/ModalAddTeam';
@@ -48,8 +50,15 @@ class team extends React.Component {
 
     render() {
         let { totalTeam, listTeam, isShowModalAddTeam, teamDetailId, isShowDetail } = this.state
+        const login = localStorage.getItem('isLogin');
+        if (login === 'false') {
+            return (
+                <Navigate to="../../login" replace={true} />
+            )
+        }
         return (
             <>
+                <Header />
                 <div className='container-team'>
                     <div className='body-container'>
                         <div className='controller'>

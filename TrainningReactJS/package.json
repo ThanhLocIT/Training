@@ -12,6 +12,7 @@
     "dotenv": "^16.0.1",
     "emitter": "^0.0.5",
     "font-awesome": "^4.7.0",
+    "md5": "^2.3.0",
     "moment": "^2.29.3",
     "react-bootstrap": "^2.4.0",
     "react-router-dom": "^6.3.0",

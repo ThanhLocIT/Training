@@ -37,6 +37,10 @@ const uploadImage = (file) => {
     });
 };
 
+const login = (phone, passWord) => {
+    return axios.get(`/login?phone=${phone}&passWord=${passWord}`);
+}
+
 export {
     getEmployeeService,
     getEmployeeByNameService,
@@ -45,5 +49,6 @@ export {
     upSertEmployeeService,
     DelListEmployeeService,
     uploadImage,
-    getInforEmployeeServiceById
+    getInforEmployeeServiceById,
+    login
 }

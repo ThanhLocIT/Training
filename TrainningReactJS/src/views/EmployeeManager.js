@@ -1,7 +1,9 @@
 import React from 'react';
 import './EmployeeManager.scss';
 import ModalUpSertEmployee from '../components/Modal/ModalUpSertEmployee';
+import Header from './Header';
 import ModalConfirmDel from '../components/Modal/ModalConfirmDel';
+import { Navigate } from 'react-router-dom';
 import { getInforEmployeeService, getEmployeeByNameService, DelListEmployeeService, getEmployeeService, DelEmployeeService } from '../services/EmloyeesService';
 import { toast } from 'react-toastify';
 import { emitter } from '../utils/emitter';
@@ -10,6 +12,7 @@ class EmployeeManager extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
+            accessToken: {},
             listEmployees: [],
             idEmployeeDel: [],
             modalShow: false,
@@ -19,10 +22,20 @@ class EmployeeManager extends React.Component {
             delListEmployeeId: [],
             delAll: false,
             modalConfirmDel: false,
+            sortSelected: '1',
+            sort: [
+                { "name": "Latest", "value": 1 },
+                { "name": "Oldest", "value": 2 },
+                { "name": "Name", "value": 3 },
+            ]
         };
     }
 
     componentDidMount() {
+        const accessToken = JSON.parse(localStorage.getItem('accessToken'));
+        this.setState({
+            accessToken: accessToken
+        })
         this.getAllEmployee(this.state.currentPage)
         this.getTotalEmployee();
     }
@@ -32,13 +45,22 @@ class EmployeeManager extends React.Component {
     }
 
     getAllEmployee = async (currentPage) => {
-        let res = await getEmployeeService(currentPage);
-        if (res === -1) {
-            res = []
+        const accessToken = JSON.parse(localStorage.getItem('accessToken'));
+        if (accessToken && accessToken.role && accessToken.role === 'R2') {
+            let arr = [];
+            arr.push(accessToken)
+            this.setState({
+                listEmployees: arr
+            })
+        } else {
+            let res = await getEmployeeService(currentPage);
+            if (res === -1) {
+                res = []
+            }
+            this.setState({
+                listEmployees: res
+            })
         }
-        this.setState({
-            listEmployees: res
-        })
     }
 
     getAllEmployeeByName = async (name) => {
@@ -298,34 +320,63 @@ class EmployeeManager extends React.Component {
         })
     }
 
+    handleOnChangeSelectSort = (event) => {
+        let value = event.target.value
+        this.setState({
+            sortSelected: value
+        })
+    }
 
     render() {
-        let { totalPage, listEmployees, delAll, modalConfirmDel } = this.state;
-
+        let { totalPage, listEmployees, delAll, modalConfirmDel, accessToken, sort, sortSelected } = this.state;
+        const role = accessToken.role ? accessToken.role : ''
+        const login = localStorage.getItem('isLogin');
+        if (login === 'false') {
+            return (
+                <Navigate to="../../login" replace={true} />
+            )
+        }
         return (
             <>
+                <Header />
                 <div className='employeeManager-container'>
                     <div className='body-container'>
                         <div className='controller'>
                             <label>Employee</label>
-                            <div className='button'>
-                                <i className="fa fa-plus-circle"
-                                    onClick={() => this.handleOpenModal()}
-                                >
-                                </i>
-                                <i className="fa fa-trash" onClick={() => this.handleDelListEmployee()}></i>
-                            </div>
+                            {role === 'R1' &&
+                                <div className='button'>
+                                    <i className="fa fa-plus-circle"
+                                        onClick={() => this.handleOpenModal()}
+                                    >
+                                    </i>
+                                    <i className="fa fa-trash" onClick={() => this.handleDelListEmployee()}></i>
+                                </div>
+                            }
                         </div>
-
-                        <div className='search'>
-                            <label className='total-employees'>Total {this.state.totalEmployee} employees</label>
-                            <div className='search-input-box'>
-                                <i className="fa fa-search"></i>
-                                <input className='input' placeholder='Search employes by name'
-                                    onChange={(event) => this.handleSearch(event)}
-                                ></input>
+                        {role === 'R1' &&
+                            <div className='search'>
+                                <label className='total-employees'>Total {this.state.totalEmployee} employees</label>
+                                <div className='search-input-box'>
+                                    <i className="fa fa-search"></i>
+                                    <input className='input' placeholder='Search employes by name'
+                                        onChange={(event) => this.handleSearch(event)}
+                                    ></input>
+                                </div>
+                                <div className='sort'>
+                                    <label>Sort by:</label>
+                                    <select className='sort-option'
+                                        onChange={(event) => this.handleOnChangeSelectSort(event)}
+                                        value={sortSelected}
+                                    >
+                                        {sort.map((item, index) => {
+                                            return (
+                                                <option value={item.value} key={item.value} >{item.name}</option>
+                                            )
+                                        })}
+                                    </select>
+                                </div>
                             </div>
-                        </div>
+                        }
 
                         {/* ------------------------------------------------------ */}
 
@@ -334,9 +385,11 @@ class EmployeeManager extends React.Component {
                             <table className="table">
                                 <thead>
                                     <tr>
-                                        <th>
-                                            <input type="checkbox" onChange={(event) => this.hanldeCheckDelAll(event)} />
-                                        </th>
+                                        {role === 'R1' &&
+                                            <th>
+                                                <input type="checkbox" onChange={(event) => this.hanldeCheckDelAll(event)} />
+                                            </th>
+                                        }
                                         <th scope="col">No</th>
                                         <th scope="col">FullName</th>
                                         <th scope="col">Phone</th>
@@ -349,19 +402,21 @@ class EmployeeManager extends React.Component {
                                         listEmployees.map((elenment, index) => {
                                             return (
                                                 <tr key={`${delAll}${elenment.id}`}>
-                                                    <td><input type="checkbox"
-                                                        onChange={(event) => this.handleOnchangeCheckbox(event)}
-                                                        value={elenment.id}
-                                                        defaultChecked={delAll}
+                                                    {role === 'R1' &&
+                                                        <td><input type="checkbox"
+                                                            onChange={(event) => this.handleOnchangeCheckbox(event)}
+                                                            value={elenment.id}
+                                                            defaultChecked={delAll}
 
-                                                    /></td>
+                                                        /></td>
+                                                    }
                                                     <td>{index + 1}</td>
                                                     <td>{elenment.fullName}</td>
                                                     <td>{elenment.phone}</td>
                                                     <td>{elenment.teamName}</td>
                                                     <td>
                                                         <Link to={`/employee/employee-infor/infor?id=${elenment.id}`}><i className="fa fa-info"></i></Link>
-                                                        <i className="fa fa-trash" onClick={() => this.handleDelEmployee(elenment.id)} ></i>
+                                                        {role === 'R1' && <i className="fa fa-trash" onClick={() => this.handleDelEmployee(elenment.id)} ></i>}
                                                     </td>
                                                 </tr>
                                             )
@@ -370,41 +425,42 @@ class EmployeeManager extends React.Component {
                                 </tbody>
                             </table>
                         </div>
+                        {role === 'R1' &&
+                            <div className='navigation-box'>
+                                <nav aria-label="Page navigation example">
+                                    <ul className="pagination">
+                                        <li className="page-item">
+                                            <button className="page-link" aria-label="Previous"
+                                                onClick={() => this.handleChangeCurrentPageBtn("Previous")}>
+                                                <span aria-hidden="true">&laquo;</span>
+                                                <span className="sr-only">Previous</span>
+                                            </button>
+                                        </li>
 
-                        <div className='navigation-box'>
-                            <nav aria-label="Page navigation example">
-                                <ul className="pagination">
-                                    <li className="page-item">
-                                        <button className="page-link" aria-label="Previous"
-                                            onClick={() => this.handleChangeCurrentPageBtn("Previous")}>
-                                            <span aria-hidden="true">&laquo;</span>
-                                            <span className="sr-only">Previous</span>
-                                        </button>
-                                    </li>
+                                        {
+                                            totalPage && totalPage.length > 0 &&
+                                            totalPage.map((item, index) => {
+                                                return (
+                                                    <li key={index} className="page-item"><button className="page-link" onClick={() => this.handleChangeCurrentPage(item)}>{item}</button></li>
+                                                )
+                                            })
+                                        }
 
-                                    {
-                                        totalPage && totalPage.length > 0 &&
-                                        totalPage.map((item, index) => {
-                                            return (
-                                                <li key={index} className="page-item"><button className="page-link" onClick={() => this.handleChangeCurrentPage(item)}>{item}</button></li>
-                                            )
-                                        })
-                                    }
-
-                                    <li className="page-item">
-                                        <button className="page-link" aria-label="Next"
-                                            onClick={() => this.handleChangeCurrentPageBtn("Next")}>
-                                            <span aria-hidden="true">&raquo;</span>
-                                            <span className="sr-only">Next</span>
-                                        </button>
-                                    </li>
-                                </ul>
-                            </nav>
-                        </div>
-
+                                        <li className="page-item">
+                                            <button className="page-link" aria-label="Next"
+                                                onClick={() => this.handleChangeCurrentPageBtn("Next")}>
+                                                <span aria-hidden="true">&raquo;</span>
+                                                <span className="sr-only">Next</span>
+                                            </button>
+                                        </li>
+                                    </ul>
+                                </nav>
+                            </div>
+                        }
                     </div>
                 </div>
-                {modalConfirmDel === true &&
+                {
+                    modalConfirmDel === true &&
                     <ModalConfirmDel
                         handleClose={this.handleCloseModalConfirm}
                         handleConfirmDel={this.handleConfirmDel}

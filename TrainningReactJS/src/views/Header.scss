@@ -32,6 +32,8 @@ a {
 
     .right {
         display: flex;
+        justify-content: center;
+        align-items: center;
 
         button {
             border: none;
@@ -60,6 +62,12 @@ a {
         .btn-active {
             background-color: rgb(43, 104, 184);
             color: white;
+        }
+
+        .log-out {
+            margin-left: 20px;
+            color: #333;
+            font-size: 2rem;
         }
     }
 }

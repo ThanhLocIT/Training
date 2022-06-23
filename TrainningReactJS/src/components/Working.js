@@ -9,19 +9,22 @@ class Working extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
+            accessToken: {},
             isShowModalAddWorking: false,
             inforWorking: '',
             idEmployee: ''
         }
     }
     async componentDidMount() {
+        const accessToken = JSON.parse(localStorage.getItem('accessToken'));
         const search = window.location.search;
         const params = new URLSearchParams(search);
         const id = params.get('id');
         let res = await getInforWorkingByEmployee(id);
         this.setState({
             idEmployee: id,
-            inforWorking: res
+            inforWorking: res,
+            accessToken: accessToken
         })
     }
 
@@ -53,13 +56,14 @@ class Working extends React.Component {
     }
 
     render() {
-        let { inforWorking, idEmployee } = this.state
+        let { inforWorking, idEmployee, accessToken } = this.state
+        const role = accessToken.role ? accessToken.role : ''
         return (
             <>
                 <div className='container-infor-detail'>
                     <div className='hearder'>
                         <div className='title'>Working</div>
-                        <div className='btn-add' onClick={() => this.setModalShow()}><i className="fa fa-plus-circle"></i></div>
+                        {role === 'R1' && <div className='btn-add' onClick={() => this.setModalShow()}><i className="fa fa-plus-circle"></i></div>}
                     </div>
                     <div className='body'>
                         <div className='infor'>
@@ -69,7 +73,7 @@ class Working extends React.Component {
                                         <th scope="col">No</th>
                                         <th scope="col">Date</th>
                                         <th scope="col">Hour</th>
-                                        <th scope="col">Option</th>
+                                        {role === 'R1' && <th scope="col">Option</th>}
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -82,7 +86,7 @@ class Working extends React.Component {
                                                         <td>{idex + 1}</td>
                                                         <td>{Moment(item.date).format('DD/MM/YYYY')}</td>
                                                         <td>{item.hour}</td>
-                                                        <td><i className="fa fa-trash" onClick={() => this.handleDeleteWorking(item.id)}></i></td>
+                                                        {role === 'R1' && <td><i className="fa fa-trash" onClick={() => this.handleDeleteWorking(item.id)}></i></td>}
                                                     </tr>
 
                                                 )

@@ -19,5 +19,9 @@ public interface RepositoryEmployees extends JpaRepository<Employees,Long> {
 
     @Query("SELECT e, t.name as teamName FROM Employees as e, Team as t where e.team = t.id")
     Page<EmployeeResponse> findAllEmployy(Pageable page);
+
+    @Query("SELECT e FROM Employees as e where e.phone = :phone and passWord = :passWord")
+    Employees Login(String phone, String passWord);
     List<Employees> findAllByTeam(Team team);
+    Employees findAllByPhone(String phone);
 }

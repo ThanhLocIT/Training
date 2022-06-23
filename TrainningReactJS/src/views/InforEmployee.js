@@ -1,5 +1,6 @@
 import React from 'react';
 import './InforEmployee.scss';
+import Header from './Header';
 import { getInforEmployeeServiceById, DelEmployeeService } from '../services/EmloyeesService';
 import { Link, Outlet, Navigate } from 'react-router-dom';
 import ModalUpSertEmployee from '../components/Modal/ModalUpSertEmployee';
@@ -8,6 +9,7 @@ class InforEmployee extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
+            accessToken: {},
             id: '',
             link_active: 'infor',
             inforEmployee: {},
@@ -18,12 +20,14 @@ class InforEmployee extends React.Component {
     }
 
     async componentDidMount() {
+        const accessToken = JSON.parse(localStorage.getItem('accessToken'));
         const search = window.location.search;
         let active = (window.location.href).slice((window.location.href).lastIndexOf("/") + 1, (window.location.href).lastIndexOf("?"));
         const params = new URLSearchParams(search);
         const id = params.get('id');
         let res = await getInforEmployeeServiceById(id)
         this.setState({
+            accessToken: accessToken,
             id: id,
             link_active: active,
             inforEmployee: res
@@ -75,15 +79,23 @@ class InforEmployee extends React.Component {
         let { id, link_active, inforEmployee, redirect } = this.state
         let avatar_default = inforEmployee.image !== "" && typeof inforEmployee.image !== "undefined" && inforEmployee.image !== null ? inforEmployee.image : "avatar1.jpg"
         let url = (window.location.href).substring(window.location.href.lastIndexOf("/") + 1);
+        const login = localStorage.getItem('isLogin');
+        let { accessToken } = this.state
+        const role = accessToken.role ? accessToken.role : ''
+        if (login === 'false') {
+            return (
+                <Navigate to="../../login" replace={true} />
+            )
+        }
         if (redirect) {
             return (
                 <Navigate to="../../employee" replace={true} />
             )
         }
-
         return (
-            <>
 
+            <>
+                <Header />
                 <div className='employee-infor-container'>
                     <div className='header'>
                         {inforEmployee !== -1 &&
@@ -91,7 +103,7 @@ class InforEmployee extends React.Component {
                         }
                         <div className='header-right'>
                             <i className="fa fa-pencil-square-o btn-update" onClick={() => this.handleOpenModalEdit()}></i>
-                            <i className="fa fa-trash btn-delete" onClick={() => this.handleDelEmployee(inforEmployee.id)} ></i>
+                            {role === 'R1' && <i className="fa fa-trash btn-delete" onClick={() => this.handleDelEmployee(inforEmployee.id)} ></i>}
                         </div>
                     </div>
                     <div className='body'>
@@ -143,6 +155,7 @@ class InforEmployee extends React.Component {
                                 setModalShow={this.setModalShow}
                                 idEmployee={this.state.id}
                                 confirmUpdate={this.confirmUpdate}
+                                role={role}
                             />
                         </div>
                     </div>

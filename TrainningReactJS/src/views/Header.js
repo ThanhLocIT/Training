@@ -5,6 +5,7 @@ class Header extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
+            accessToken: {},
             btnActive: "employee",
         };
     }
@@ -14,6 +15,10 @@ class Header extends React.Component {
         this.setState({
             btnActive: active
         })
+        const accessToken = JSON.parse(localStorage.getItem('accessToken'));
+        this.setState({
+            accessToken: accessToken
+        })
     }
 
     btnActive = (active) => {
@@ -21,7 +26,15 @@ class Header extends React.Component {
             btnActive: active
         })
     }
+
+    handleLogOut = () => {
+        localStorage.setItem('accessToken', JSON.stringify({}));
+        localStorage.setItem('isLogin', JSON.stringify(false));
+    }
+
     render() {
+        let { accessToken } = this.state
+        const role = accessToken.role ? accessToken.role : ''
         let { btnActive } = this.state
         return (
             <div className='header-container'>
@@ -35,9 +48,10 @@ class Header extends React.Component {
                 </div>
                 <div className='right'>
                     <Link to="/"><button className={btnActive === "employee" ? 'btn-employee btn-active' : 'btn-employee'} onClick={() => this.btnActive("employee")}>Employee</button></Link>
-                    <Link to="/team"><button className={btnActive === "team" ? 'btn-team btn-active' : 'btn-team'} onClick={() => this.btnActive("team")}> Team</button></Link>
+                    {role === 'R1' && <Link to="/team"><button className={btnActive === "team" ? 'btn-team btn-active' : 'btn-team'} onClick={() => this.btnActive("team")}> Team</button></Link>}
+                    <Link to="/login"><i className="fa fa-sign-out log-out" onClick={() => this.handleLogOut()}></i></Link>
                 </div>
-            </div >
+            </div>
         )
     }
 }

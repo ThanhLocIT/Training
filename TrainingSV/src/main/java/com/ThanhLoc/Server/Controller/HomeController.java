@@ -35,11 +35,14 @@ public class HomeController {
 //        //copy property from source to em
         BeanUtils.copyProperties(dataEmployee,em);
         em.setTeam(team);
-        boolean result = svEmployee.upSertEmployee(em);
-        if(result){
+        int result = svEmployee.upSertEmployee(em);
+        if(result == 0){
             return ResponseEntity.ok(0);
         }
-        return ResponseEntity.ok(-1);
+        if(result == -1){
+            return ResponseEntity.ok(-1);
+        }
+        return ResponseEntity.ok(1);
     }
 
     @RequestMapping(path = "/get_employee", method = RequestMethod.GET)
@@ -118,5 +121,13 @@ public class HomeController {
         return ResponseEntity.ok(-1);
     }
 
-
+    @RequestMapping(path = "/login", method = RequestMethod.GET)
+    public ResponseEntity<?> Login (@RequestParam String phone, String passWord){
+        try {
+            EmployeeResponse reasult = svEmployee.Login(phone,passWord);
+                return ResponseEntity.ok(reasult);
+        }catch (RuntimeException e){
+            return ResponseEntity.ok(-1);
+        }
+    }
 }

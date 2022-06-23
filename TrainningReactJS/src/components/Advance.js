@@ -8,19 +8,22 @@ class Advance extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
+            accessToken: {},
             isShowModalAddAdvance: false,
             inforAdvances: '',
             idEmployee: ''
         }
     }
     async componentDidMount() {
+        const accessToken = JSON.parse(localStorage.getItem('accessToken'));
         const search = window.location.search;
         const params = new URLSearchParams(search);
         const id = params.get('id');
         let res = await getInforAdvancesByEmployee(id);
         this.setState({
             idEmployee: id,
-            inforAdvances: res
+            inforAdvances: res,
+            accessToken: accessToken
         })
 
     }
@@ -53,13 +56,14 @@ class Advance extends React.Component {
         })
     }
     render() {
-        let { inforAdvances } = this.state;
+        let { inforAdvances, accessToken } = this.state;
+        const role = accessToken.role ? accessToken.role : ''
         return (
             <>
                 <div className='container-infor-detail'>
                     <div className='hearder'>
                         <div className='title'>ADVANCES</div>
-                        <div className='btn-add' onClick={() => this.setModalShow()}><i className="fa fa-plus-circle"></i></div>
+                        {role === 'R1' && <div className='btn-add' onClick={() => this.setModalShow()}><i className="fa fa-plus-circle"></i></div>}
                     </div>
                     <div className='body'>
                         <div className='infor'>
@@ -69,7 +73,7 @@ class Advance extends React.Component {
                                         <th scope="col">No</th>
                                         <th scope="col">Date</th>
                                         <th scope="col">Money</th>
-                                        <th scope="col">Option</th>
+                                        {role === 'R1' && <th scope="col">Option</th>}
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -81,7 +85,7 @@ class Advance extends React.Component {
                                                         <td>{index + 1}</td>
                                                         <td>{Moment(item.date).format('DD/MM/YYYY')}</td>
                                                         <td>{item.money}</td>
-                                                        <td><i className="fa fa-trash" onClick={() => this.handleDeleteAdvances(item.id)}></i></td>
+                                                        {role === 'R1' && <td><i className="fa fa-trash" onClick={() => this.handleDeleteAdvances(item.id)}></i></td>}
                                                     </tr>
                                                 )
                                             })

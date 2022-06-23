@@ -19,14 +19,14 @@ public class Employees {
     private Long id;
     @Column(nullable = false)
     private String fullName;
-
+    private String passWord;
     private String address;
     private String sex;
     private int age;
     private LocalDate day;
     private int money;
-
     private String phone;
+    private  String role;
     @ManyToOne
     private Team team;
     private  String image;

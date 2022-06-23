@@ -11,28 +11,35 @@ class ModalUpSertEmployee extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
+            showMode: false,
             idEmployee: '',
             fullName: '',
+            passWord: '',
             address: '',
             sex: '',
             age: '',
             day: '',
             money: '',
             phone: '',
+            role: '',
             team_id: '',
             image: '',
             previewImgURL: '',
             isOpen: false,
-            imagename: '',
             imageData: '',
             listTeam: [],
             selectedTeam: '',
             selectedTeamLabel: '',
             selectedSex: '',
+            selectedRole: '',
             listSex: [
                 { value: 'male', label: 'Male' },
                 { value: 'female', label: 'FeMale' },
                 { value: 'other', label: 'Other' }
+            ],
+            listRole: [
+                { value: 'R1', label: 'Admin' },
+                { value: 'R2', label: 'Employee' },
             ]
         };
     }
@@ -41,6 +48,7 @@ class ModalUpSertEmployee extends React.Component {
         emitter.on('EVENT_CLEAR_MODAL_DATA', () => {
             this.setState({
                 fullName: '',
+                passWord: '',
                 address: '',
                 sex: '',
                 age: '',
@@ -51,14 +59,18 @@ class ModalUpSertEmployee extends React.Component {
                 previewImgURL: '',
                 isOpen: false,
                 imageData: '',
-                selectedTeam: [],
-                selectedSex: [],
+                selectedTeam: '',
+                selectedSex: '',
+                selectedRole: '',
                 image: '',
             })
         })
     }
 
     async componentDidMount() {
+        this.setState({
+            modalShow: this.props.modalShow
+        })
         let res = await getTeamService()
         if (res) {
             this.setState({
@@ -80,10 +92,15 @@ class ModalUpSertEmployee extends React.Component {
                 return item && item.value === res.sex
             })
 
+            let selectedRole = this.state.listRole.find(item => {
+                return item && item.value === res.role
+            })
+
             if (res) {
                 this.setState({
                     idEmployee: res.id,
                     fullName: res.fullName,
+                    passWord: res.passWord,
                     address: res.address,
                     sex: res.sex,
                     age: res.age,
@@ -93,7 +110,8 @@ class ModalUpSertEmployee extends React.Component {
                     team_id: res.team_id,
                     image: res.image,
                     selectedTeam: selectedTeam,
-                    selectedSex: selectedSex
+                    selectedSex: selectedSex,
+                    selectedRole: selectedRole
                 })
             }
         }
@@ -122,22 +140,75 @@ class ModalUpSertEmployee extends React.Component {
             let selectedSex = this.state.listSex.find(item => {
                 return item && item.value === res.sex
             })
+            let selectedRole = this.state.listRole.find(item => {
+                return item && item.value === res.role
+            })
 
             if (res) {
                 this.setState({
                     idEmployee: res.id,
                     fullName: res.fullName,
+                    passWord: res.passWord,
                     address: res.address,
                     sex: res.sex,
                     age: res.age,
                     day: res.day,
                     money: res.money,
                     phone: res.phone,
+                    role: res.role,
                     team_id: res.team_id,
                     image: res.image,
                     selectedTeam: selectedTeam,
-                    selectedSex: selectedSex
+                    selectedSex: selectedSex,
+                    selectedRole: selectedRole
                 })
+            }
+        }
+
+        if (this.props.modalShow !== prevProps.modalShow) {
+            if (this.props.idEmployee) {
+                let team = await getTeamService()
+                if (team) {
+                    this.setState({
+                        listTeam: this.buildDataSelectTeam(team.listTeam)
+                    })
+
+                }
+                this.setState({
+                    idEmployee: this.props.idEmployee
+                })
+                let res = await getInforEmployeeServiceById(this.props.idEmployee);
+
+                let selectedTeam = this.state.listTeam.find(item => {
+                    return item && item.value === res.team_id
+                })
+
+                let selectedSex = this.state.listSex.find(item => {
+                    return item && item.value === res.sex
+                })
+                let selectedRole = this.state.listRole.find(item => {
+                    return item && item.value === res.role
+                })
+
+                if (res) {
+                    this.setState({
+                        idEmployee: res.id,
+                        fullName: res.fullName,
+                        passWord: res.passWord,
+                        address: res.address,
+                        sex: res.sex,
+                        age: res.age,
+                        day: res.day,
+                        money: res.money,
+                        phone: res.phone,
+                        role: res.role,
+                        team_id: res.team_id,
+                        image: res.image,
+                        selectedTeam: selectedTeam,
+                        selectedSex: selectedSex,
+                        selectedRole: selectedRole
+                    })
+                }
             }
         }
     }
@@ -178,9 +249,15 @@ class ModalUpSertEmployee extends React.Component {
         })
     }
 
+    handleOnchangeSelectRole = (selectedOptions) => {
+        this.setState({
+            role: selectedOptions.value,
+        })
+    }
+
 
     handleSubmit = async () => {
-        let arr = ['fullName', 'address', 'sex', 'age', 'day', 'money', 'phone', `team_id`]
+        let arr = ['fullName', 'passWord', 'address', 'sex', 'age', 'day', 'money', 'phone', 'role', `team_id`]
         let err = false;
         for (let i = 0; i < arr.length; i++) {
             if (!this.state[arr[i]]) {
@@ -214,7 +291,6 @@ class ModalUpSertEmployee extends React.Component {
 
         if (!err) {
             let upload = ''
-
             if (this.state.imageData !== '') {
                 upload = await uploadImage(
                     this.state.imageData
@@ -226,19 +302,21 @@ class ModalUpSertEmployee extends React.Component {
                 }
 
             }
+            var md5 = require('md5');
             let res = await upSertEmployeeService({
                 id: this.state.idEmployee,
                 fullName: this.state.fullName,
+                passWord: this.state.idEmployee ? this.state.passWord : md5(this.state.passWord),
                 address: this.state.address,
                 sex: this.state.sex,
                 age: this.state.age,
                 day: this.state.day,
                 money: this.state.money,
                 phone: this.state.phone,
+                role: this.state.role,
                 team_id: this.state.team_id,
                 image: upload.data ? upload.data : this.state.image
             })
-
             if (res === 0) {
                 if (this.state.idEmployee !== "") {
                     toast.success("Update employee success");
@@ -248,7 +326,11 @@ class ModalUpSertEmployee extends React.Component {
                     toast.success("Add new employee success");
                 }
                 this.props.setModalShow();
-            } else {
+            }
+            if (res === 1) {
+                toast.error("Phone number already exists !");
+            }
+            if (res === -1) {
                 if (this.state.idEmployee !== "") {
                     toast.error("Update employee fail")
                 } else {
@@ -281,7 +363,7 @@ class ModalUpSertEmployee extends React.Component {
 
     render() {
         let { modalShow } = this.props;
-        let { listTeam, selectedTeam, listSex, selectedSex, image } = this.state
+        let { listTeam, selectedTeam, listSex, selectedSex, image, listRole, selectedRole, idEmployee } = this.state
         return (
 
             <ModalProps
@@ -297,11 +379,20 @@ class ModalUpSertEmployee extends React.Component {
                 </ModalProps.Header>
                 <ModalProps.Body>
                     <div className="row">
-                        <div className="form-group col-12">
+                        <div className="form-group col-6">
                             <label>Full name employee</label>
                             <input type="text" className="form-control"
                                 value={this.state.fullName}
                                 onChange={(event) => this.handleOnchangeInput(event, 'fullName')}
+                            >
+                            </input>
+                        </div>
+                        <div className="form-group col-6">
+                            <label>Password</label>
+                            <input type="password" className="form-control"
+                                value={this.state.passWord}
+                                onChange={(event) => this.handleOnchangeInput(event, 'passWord')}
+                                disabled={idEmployee ? true : false}
                             >
                             </input>
                         </div>
@@ -359,6 +450,17 @@ class ModalUpSertEmployee extends React.Component {
 
                         </div>
                         <div className="form-group col-6">
+                            <label>Role</label>
+                            <Select
+                                options={listRole}
+                                onChange={this.handleOnchangeSelectRole}
+                                name={'role'}
+                                defaultValue={selectedRole}
+                                isDisabled={this.props.role === 'R2' ? true : false}
+                            />
+
+                        </div>
+                        <div className="form-group col-6 my-3" >
                             <label className='label-upload' htmlFor='previewImg'><i className="fa fa-camera"></i>Tải ảnh</label>
                             <input className='preview-img-input form-control' id='previewImg' type='file'
                                 style={{ display: "none" }}
@@ -375,12 +477,13 @@ class ModalUpSertEmployee extends React.Component {
                                     </>
                                     :
                                     <>
-                                        <div className='preview-img'
-                                            style={{ backgroundImage: "url(" + `http://localhost:8080/upload-file/files/${image}` + ")" }}
-                                            onClick={() => this.openReviewImage()}
-
-                                        >
-                                        </div>
+                                        {image &&
+                                            <div className='preview-img'
+                                                style={{ backgroundImage: "url(" + `http://localhost:8080/upload-file/files/${image}` + ")" }}
+                                                onClick={() => this.openReviewImage()}
+                                            >
+                                            </div>
+                                        }
                                     </>
                             }
                         </div>
@@ -390,7 +493,7 @@ class ModalUpSertEmployee extends React.Component {
                     <button className='btn btn-primary' onClick={this.props.setModalShow}>CANCEL</button>
                     <button className='btn btn-success' onClick={() => this.handleSubmit()}>SUBMIT</button>
                 </ModalProps.Footer>
-            </ModalProps >
+            </ModalProps>
 
         )
     }
