@@ -46,9 +46,9 @@ public class HomeController {
     }
 
     @RequestMapping(path = "/get_employee", method = RequestMethod.GET)
-    public ResponseEntity<?> fetchEmployee (@RequestParam int page){
+    public ResponseEntity<?> fetchEmployee (@RequestParam int page, int sort){
         try {
-            List<EmployeeResponse> result = svEmployee.listEmployees(page);
+            List<EmployeeResponse> result = svEmployee.listEmployees(page, sort);
             if(result.size() > 0){
                 return ResponseEntity.ok(result);
             }
@@ -59,9 +59,9 @@ public class HomeController {
     }
 
     @RequestMapping(path = "/get_employee_by_name", method = RequestMethod.GET)
-    public ResponseEntity<?> fetchEmployeeByName (@RequestParam String name, int page){
+    public ResponseEntity<?> fetchEmployeeByName (@RequestParam String name, int page, int sort){
         try {
-            List<EmployeeResponse> result = svEmployee.listEmployeesByName(name, page);
+            List<EmployeeResponse> result = svEmployee.listEmployeesByName(name, page,sort);
             if(result.size() > 0){
                 return ResponseEntity.ok(result);
             }
@@ -119,6 +119,15 @@ public class HomeController {
             return ResponseEntity.ok(-1);
         }
         return ResponseEntity.ok(-1);
+    }
+    @RequestMapping(path = "/get-total-employee-by-name", method = RequestMethod.GET)
+    public ResponseEntity<?> totalEmployeeByName (@RequestParam String name){
+        try {
+            List<Employees> result = svEmployee.getTotalEmployeeByName(name);
+                return ResponseEntity.ok(result.size());
+        }catch (RuntimeException e){
+            return ResponseEntity.ok(-1);
+        }
     }
 
     @RequestMapping(path = "/login", method = RequestMethod.GET)

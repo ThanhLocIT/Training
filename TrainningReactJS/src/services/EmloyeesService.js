@@ -1,15 +1,19 @@
 import axios from '../axios';
 
-const getEmployeeService = (data) => {
-    return axios.get(`/get_employee?page=${data}`);
+const getEmployeeService = (data, sort) => {
+    return axios.get(`/get_employee?page=${data}&sort=${sort}`);
 }
 
-const getEmployeeByNameService = (name, page) => {
-    return axios.get(`/get_employee_by_name?name=${name}&page=${page}`);
+const getEmployeeByNameService = (name, page, sort) => {
+    return axios.get(`/get_employee_by_name?name=${name}&page=${page}&sort=${sort}`);
 }
 
 const getInforEmployeeService = (data) => {
     return axios.get(`/get-total-employee`);
+}
+
+const totalEmployeeByNameService = (name) => {
+    return axios.get(`get-total-employee-by-name?name=${name}`);
 }
 
 const getInforEmployeeServiceById = (id) => {
@@ -50,5 +54,6 @@ export {
     DelListEmployeeService,
     uploadImage,
     getInforEmployeeServiceById,
-    login
+    login,
+    totalEmployeeByNameService
 }

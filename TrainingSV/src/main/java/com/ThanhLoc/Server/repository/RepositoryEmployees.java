@@ -24,4 +24,6 @@ public interface RepositoryEmployees extends JpaRepository<Employees,Long> {
     Employees Login(String phone, String passWord);
     List<Employees> findAllByTeam(Team team);
     Employees findAllByPhone(String phone);
+    @Query("SELECT e FROM Employees as e where e.fullName LIKE %:fullName%")
+    List<Employees> findAllByFullName(String fullName);
 }

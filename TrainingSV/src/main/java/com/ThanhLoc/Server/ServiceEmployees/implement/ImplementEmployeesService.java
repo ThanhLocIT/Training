@@ -63,13 +63,22 @@ public class ImplementEmployeesService implements EmployeesService {
     }
 
     @Override
-    public List<EmployeeResponse> listEmployees(int pageTotal) throws RuntimeException {
-        Sort sort = Sort.by(Sort.Direction.DESC, "id");
+    public List<EmployeeResponse> listEmployees(int pageTotal , int sort) throws RuntimeException {
+        Sort s = Sort.by(Sort.Direction.DESC, "id");
+        if(sort == 1){
+            s = Sort.by(Sort.Direction.DESC, "id");
+        }
+        if(sort == 2){
+            s = Sort.by(Sort.Direction.ASC, "id");
+        }
+        if(sort == 3){
+            s = Sort.by(Sort.Direction.ASC, "fullName");
+        }
         int size = 6;
         try {
             List<EmployeeResponse> list = new ArrayList<>();
             //Pageable domain
-            Pageable page = PageRequest.of(pageTotal - 1, size, sort);
+            Pageable page = PageRequest.of(pageTotal - 1, size, s);
             Page<Employees> res = reEmployee.findAll(page);
             if (res != null & res.getSize() > 0)
                 for (Employees employee : res.getContent()) {
@@ -86,13 +95,22 @@ public class ImplementEmployeesService implements EmployeesService {
     }
 
     @Override
-    public List<EmployeeResponse> listEmployeesByName(String name, int pageTotal) throws RuntimeException {
-        Sort sort = Sort.by("id");
+    public List<EmployeeResponse> listEmployeesByName(String name, int pageTotal,int sort) throws RuntimeException {
+        Sort s = Sort.by(Sort.Direction.DESC, "id");
+        if(sort == 1){
+            s = Sort.by(Sort.Direction.DESC, "id");
+        }
+        if(sort == 2){
+            s = Sort.by(Sort.Direction.ASC, "id");
+        }
+        if(sort == 3){
+            s = Sort.by(Sort.Direction.ASC, "fullName");
+        }
         int size = 6;
         try {
             List<EmployeeResponse> list = new ArrayList<>();
             //Pageable domain
-            Pageable page = PageRequest.of(pageTotal - 1, size, sort);
+            Pageable page = PageRequest.of(pageTotal - 1, size, s);
             Page<Employees> res = reEmployee.findAllByFullName(name, page);
             if (res != null & res.getSize() > 0)
                 for (Employees employee : res.getContent()) {
@@ -107,6 +125,7 @@ public class ImplementEmployeesService implements EmployeesService {
             throw new RuntimeException();
         }
     }
+
 
     @Override
     public EmployeeResponse listEmployeesById(Long id) throws RuntimeException {
@@ -159,6 +178,17 @@ public class ImplementEmployeesService implements EmployeesService {
         try {
             List<Employees> list = new ArrayList<>();
             list = reEmployee.findAll();
+            return list;
+        } catch (Exception e) {
+            throw new RuntimeException();
+        }
+    }
+
+    @Override
+    public List<Employees> getTotalEmployeeByName(String name) throws RuntimeException {
+        try {
+            List<Employees> list = new ArrayList<>();
+            list = reEmployee.findAllByFullName(name);
             return list;
         } catch (Exception e) {
             throw new RuntimeException();

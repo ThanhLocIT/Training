@@ -4,7 +4,7 @@ import ModalUpSertEmployee from '../components/Modal/ModalUpSertEmployee';
 import Header from './Header';
 import ModalConfirmDel from '../components/Modal/ModalConfirmDel';
 import { Navigate } from 'react-router-dom';
-import { getInforEmployeeService, getEmployeeByNameService, DelListEmployeeService, getEmployeeService, DelEmployeeService } from '../services/EmloyeesService';
+import { getInforEmployeeService, getEmployeeByNameService, DelListEmployeeService, getEmployeeService, DelEmployeeService, totalEmployeeByNameService } from '../services/EmloyeesService';
 import { toast } from 'react-toastify';
 import { emitter } from '../utils/emitter';
 import { Link } from 'react-router-dom';
@@ -19,6 +19,7 @@ class EmployeeManager extends React.Component {
             currentPage: 1,
             totalPage: [],
             totalEmployee: 0,
+            search: '',
             delListEmployeeId: [],
             delAll: false,
             modalConfirmDel: false,
@@ -36,7 +37,7 @@ class EmployeeManager extends React.Component {
         this.setState({
             accessToken: accessToken
         })
-        this.getAllEmployee(this.state.currentPage)
+        this.getAllEmployee(this.state.currentPage, this.state.sortSelected)
         this.getTotalEmployee();
     }
 
@@ -44,7 +45,7 @@ class EmployeeManager extends React.Component {
 
     }
 
-    getAllEmployee = async (currentPage) => {
+    getAllEmployee = async (currentPage, sort) => {
         const accessToken = JSON.parse(localStorage.getItem('accessToken'));
         if (accessToken && accessToken.role && accessToken.role === 'R2') {
             let arr = [];
@@ -53,7 +54,7 @@ class EmployeeManager extends React.Component {
                 listEmployees: arr
             })
         } else {
-            let res = await getEmployeeService(currentPage);
+            let res = await getEmployeeService(currentPage, sort);
             if (res === -1) {
                 res = []
             }
@@ -63,15 +64,16 @@ class EmployeeManager extends React.Component {
         }
     }
 
-    getAllEmployeeByName = async (name) => {
-        let res = await getEmployeeByNameService(name, 1);
+    getAllEmployeeByName = async (name, page, sort) => {
+        let res = await getEmployeeByNameService(name, page, sort);
+        let total = await totalEmployeeByNameService(name)
         if (res === -1) {
             res = []
         }
         let totalEmployee = 0;
         let totalPage = [];
-        if (res && res.length > 0 && res !== '-1') {
-            totalEmployee = res.length
+        if (total && total !== -1) {
+            totalEmployee = total
         }
         if (totalEmployee > 0) {
             if (totalEmployee % 6 === 0) {
@@ -85,7 +87,7 @@ class EmployeeManager extends React.Component {
             }
         }
         this.setState({
-            currentPage: 1,
+            currentPage: page,
             listEmployees: res,
             totalEmployee: totalEmployee,
             totalPage: totalPage
@@ -123,7 +125,7 @@ class EmployeeManager extends React.Component {
             modalShow: !this.state.modalShow
         })
         let { currentPage } = this.state;
-        this.getAllEmployee(currentPage);
+        this.getAllEmployee(currentPage, this.state.sortSelected);
         this.getTotalEmployee();
     }
 
@@ -140,7 +142,12 @@ class EmployeeManager extends React.Component {
                 this.setState({
                     currentPage: this.state.currentPage - 1
                 })
-                this.getAllEmployee(current)
+                if (this.state.search !== '') {
+                    this.getAllEmployeeByName(this.state.search, current, this.state.sortSelected)
+                } else {
+                    this.getAllEmployee(current, this.state.sortSelected)
+                }
+
             }
         }
         if (type === "Next") {
@@ -149,7 +156,11 @@ class EmployeeManager extends React.Component {
                 this.setState({
                     currentPage: this.state.currentPage + 1
                 })
-                this.getAllEmployee(current)
+                if (this.state.search !== '') {
+                    this.getAllEmployeeByName(this.state.search, current, this.state.sortSelected)
+                } else {
+                    this.getAllEmployee(current, this.state.sortSelected)
+                }
             }
         }
     }
@@ -158,7 +169,11 @@ class EmployeeManager extends React.Component {
         this.setState({
             currentPage: current
         })
-        this.getAllEmployee(current)
+        if (this.state.search !== '') {
+            this.getAllEmployeeByName(this.state.search, current, this.state.sortSelected)
+        } else {
+            this.getAllEmployee(current, this.state.sortSelected)
+        }
     }
 
     handleOnchangeCheckbox = async (event) => {
@@ -207,7 +222,7 @@ class EmployeeManager extends React.Component {
                         current = currentPage
                     }
                 }
-                this.getAllEmployee(current);
+                this.getAllEmployee(current, this.state.sortSelected);
             } else {
                 toast.err("Delete list employee fail !")
             }
@@ -236,7 +251,7 @@ class EmployeeManager extends React.Component {
                         current = currentPage
                     }
                 }
-                this.getAllEmployee(current);
+                this.getAllEmployee(current, this.state.sortSelected);
             } else {
                 toast.error("Delete employee fail !");
             }
@@ -299,12 +314,14 @@ class EmployeeManager extends React.Component {
                 delListEmployeeId: []
             })
         }
-
     }
 
     handleSearch = async (event) => {
         let name = event.target.value;
-        this.getAllEmployeeByName(name);
+        this.getAllEmployeeByName(name, 1, this.state.sortSelected);
+        this.setState({
+            search: name
+        })
     }
 
     handleCloseModalConfirm = () => {
@@ -322,12 +339,19 @@ class EmployeeManager extends React.Component {
 
     handleOnChangeSelectSort = (event) => {
         let value = event.target.value
+        console.log(this.state.search)
+        if (this.state.search === '') {
+            this.getAllEmployee(this.state.currentPage, value)
+        } else {
+            this.getAllEmployeeByName(this.state.search, 1, value);
+        }
         this.setState({
             sortSelected: value
         })
     }
 
     render() {
+
         let { totalPage, listEmployees, delAll, modalConfirmDel, accessToken, sort, sortSelected } = this.state;
         const role = accessToken.role ? accessToken.role : ''
         const login = localStorage.getItem('isLogin');
