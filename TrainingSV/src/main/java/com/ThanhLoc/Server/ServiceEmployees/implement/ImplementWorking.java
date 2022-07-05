@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class ImplementWorking implements WorkingService {
@@ -70,6 +71,27 @@ public class ImplementWorking implements WorkingService {
             return hour;
         }catch(Exception e){
             throw new RuntimeException();
+        }
+    }
+
+    @Override
+    public int approvalWorking(Long id) {
+        try {
+            Optional<Working> res = reWorking.findById(id);
+            Working working1 = new Working();
+            if (res != null ) {
+                working1.setId(res.get().getId());
+                working1.setEmployeeId(res.get().getEmployeeId());
+                working1.setDate(res.get().getDate());
+                working1.setHour(res.get().getHour());
+                working1.setStatus(1);
+                reWorking.save(working1);
+            }else{
+                return 1;
+            }
+            return 0;
+        } catch (Exception e) {
+            return -1;
         }
     }
 

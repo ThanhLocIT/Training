@@ -15,4 +15,6 @@ public interface AdvancesService  {
     boolean deleteAdvancesByEmployeeId(Long idEmployee) throws RuntimeException;
 
     MoneyAdvancesResponse getMoneyAdvances(Long id, int month, int year) throws RuntimeException;
+
+    int approvalAdvance(Long id);
 }

@@ -7,14 +7,17 @@ import { upSertEmployeeService, uploadImage, getInforEmployeeServiceById } from 
 import { getTeamService } from '../../services/TeamService';
 import { emitter } from '../../utils/emitter'
 import validator from 'validator'
+import ModalUpdatePassWord from './ModalUpdatePassWord';
 class ModalUpSertEmployee extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
+            showModalUpdatePassWord: false,
             showMode: false,
             idEmployee: '',
             fullName: '',
             passWord: '',
+            newPassword: '',
             address: '',
             sex: '',
             age: '',
@@ -47,8 +50,10 @@ class ModalUpSertEmployee extends React.Component {
     listenToEmitter() {
         emitter.on('EVENT_CLEAR_MODAL_DATA', () => {
             this.setState({
+                showModalUpdatePassWord: false,
                 fullName: '',
                 passWord: '',
+                newPassword: '',
                 address: '',
                 sex: '',
                 age: '',
@@ -302,7 +307,7 @@ class ModalUpSertEmployee extends React.Component {
                 }
 
             }
-            var md5 = require('md5');
+            let md5 = require('md5');
             let res = await upSertEmployeeService({
                 id: this.state.idEmployee,
                 fullName: this.state.fullName,
@@ -360,141 +365,186 @@ class ModalUpSertEmployee extends React.Component {
 
     }
 
+    setModalShowUpdatePassword = () => {
+        emitter.emit('EVENT_CLEAR_MODAL_UPDATE_PASSWORD', { 'id': 'your id' });
+        this.setState({
+            showModalUpdatePassWord: !this.state.showModalUpdatePassWord
+        })
+    }
+
+    setShowModalUpdatePassWord = () => {
+        this.setState({
+            showModalUpdatePassWord: true
+        })
+    }
+
+    changePassWord = (newPassWord) => {
+        let md5 = require('md5');
+        newPassWord = md5(newPassWord)
+        this.setState({
+            passWord: newPassWord
+        })
+    }
 
     render() {
         let { modalShow } = this.props;
         let { listTeam, selectedTeam, listSex, selectedSex, image, listRole, selectedRole, idEmployee } = this.state
         return (
-
-            <ModalProps
-                show={modalShow}
-                size="lg"
-                aria-labelledby="contained-modal-title-vcenter"
-                centered
-            >
-                <ModalProps.Header>
-                    <ModalProps.Title id="contained-modal-title-vcenter">
-                        Add new Employee
-                    </ModalProps.Title>
-                </ModalProps.Header>
-                <ModalProps.Body>
-                    <div className="row">
-                        <div className="form-group col-6">
-                            <label>Full name employee</label>
-                            <input type="text" className="form-control"
-                                value={this.state.fullName}
-                                onChange={(event) => this.handleOnchangeInput(event, 'fullName')}
-                            >
-                            </input>
-                        </div>
-                        <div className="form-group col-6">
-                            <label>Password</label>
-                            <input type="password" className="form-control"
-                                value={this.state.passWord}
-                                onChange={(event) => this.handleOnchangeInput(event, 'passWord')}
-                                disabled={idEmployee ? true : false}
-                            >
-                            </input>
-                        </div>
-                        <div className="form-group col-6">
-                            <label>Address</label>
-                            <input type="text" className="form-control"
-                                value={this.state.address}
-                                onChange={(event) => this.handleOnchangeInput(event, 'address')}
-                            ></input>
-                        </div> <div className="form-group col-6">
-                            <label>Sex employee</label>
-                            <Select
-                                options={listSex}
-                                onChange={this.handleOnchangeSelectSex}
-                                name={'sex'}
-                                defaultValue={selectedSex}
-                            />
-
-                        </div> <div className="form-group col-6">
-                            <label>Age employee</label>
-                            <input type="text" className="form-control"
-                                value={this.state.age}
-                                onChange={(event) => this.handleOnchangeInput(event, 'age')}
-                            ></input>
-                        </div>
-                        <div className="form-group col-6">
-                            <label>Start day</label>
-                            <input type="date" className="form-control"
-                                value={this.state.day}
-                                onChange={(event) => this.handleOnchangeInput(event, 'day')}
-
-                            ></input>
-                        </div>
-                        <div className="form-group col-6">
-                            <label>Money/hour</label>
-                            <input type="text" className="form-control"
-                                value={this.state.money}
-                                onChange={(event) => this.handleOnchangeInput(event, 'money')}
-                            ></input>
-                        </div>
-                        <div className="form-group col-6">
-                            <label>Phone number</label>
-                            <input type="text" className="form-control"
-                                value={this.state.phone}
-                                onChange={(event) => this.handleOnchangeInput(event, 'phone')}
-                            ></input>
-                        </div>
-                        <div className="form-group col-6">
-                            <label>Team</label>
-                            <Select options={listTeam}
-                                onChange={this.handleOnchangeSelectTeam}
-                                name={'team'}
-                                defaultValue={selectedTeam}
-                            />
-
-                        </div>
-                        <div className="form-group col-6">
-                            <label>Role</label>
-                            <Select
-                                options={listRole}
-                                onChange={this.handleOnchangeSelectRole}
-                                name={'role'}
-                                defaultValue={selectedRole}
-                                isDisabled={this.props.role === 'R2' ? true : false}
-                            />
-
-                        </div>
-                        <div className="form-group col-6 my-3" >
-                            <label className='label-upload' htmlFor='previewImg'><i className="fa fa-camera"></i>Tải ảnh</label>
-                            <input className='preview-img-input form-control' id='previewImg' type='file'
-                                style={{ display: "none" }}
-                                onChange={(event) => this.handleOnchangImage(event)}
-                            />
-                            {
-                                this.state.previewImgURL !== '' ?
-                                    <>
-                                        <div className='preview-img'
-                                            style={{ backgroundImage: `url(${this.state.previewImgURL})` }}
-                                            onClick={() => this.openReviewImage()}
+            <>
+                <ModalProps
+                    show={modalShow}
+                    size="lg"
+                    aria-labelledby="contained-modal-title-vcenter"
+                    centered
+                >
+                    <ModalProps.Header>
+                        <ModalProps.Title id="contained-modal-title-vcenter">
+                            Add new Employee
+                        </ModalProps.Title>
+                    </ModalProps.Header>
+                    <ModalProps.Body>
+                        <div className="row">
+                            <div className="form-group col-6">
+                                <label>Full name employee</label>
+                                <input type="text" className="form-control"
+                                    value={this.state.fullName}
+                                    onChange={(event) => this.handleOnchangeInput(event, 'fullName')}
+                                    disabled={this.props.role === 'R2' ? true : false}
+                                >
+                                </input>
+                            </div>
+                            <div className="form-group col-6" >
+                                <label>Password</label>
+                                {
+                                    idEmployee ?
+                                        <input type="password" className="form-control"
+                                            value={this.state.passWord}
+                                            onClick={() => this.setShowModalUpdatePassWord()}
+                                            onChange={() => this.setShowModalUpdatePassWord()}
                                         >
-                                        </div>
-                                    </>
-                                    :
-                                    <>
-                                        {image &&
+                                        </input>
+                                        :
+                                        <input type="password" className="form-control"
+                                            value={this.state.passWord}
+                                            onChange={(event) => this.handleOnchangeInput(event, 'passWord')}
+                                        >
+                                        </input>
+                                }
+                            </div>
+                            <div className="form-group col-6">
+                                <label>Address</label>
+                                <input type="text" className="form-control"
+                                    value={this.state.address}
+                                    onChange={(event) => this.handleOnchangeInput(event, 'address')}
+                                    disabled={this.props.role === 'R2' ? true : false}
+                                ></input>
+                            </div> <div className="form-group col-6">
+                                <label>Sex employee</label>
+                                <Select
+                                    options={listSex}
+                                    onChange={this.handleOnchangeSelectSex}
+                                    name={'sex'}
+                                    defaultValue={selectedSex}
+                                    isDisabled={this.props.role === 'R2' ? true : false}
+                                />
+
+                            </div> <div className="form-group col-6">
+                                <label>Age employee</label>
+                                <input type="text" className="form-control"
+                                    value={this.state.age}
+                                    onChange={(event) => this.handleOnchangeInput(event, 'age')}
+                                    disabled={this.props.role === 'R2' ? true : false}
+                                ></input>
+                            </div>
+                            <div className="form-group col-6">
+                                <label>Start day</label>
+                                <input type="date" className="form-control"
+                                    value={this.state.day}
+                                    onChange={(event) => this.handleOnchangeInput(event, 'day')}
+                                    disabled={this.props.role === 'R2' ? true : false}
+
+                                ></input>
+                            </div>
+                            <div className="form-group col-6">
+                                <label>Money/hour</label>
+                                <input type="text" className="form-control"
+                                    value={this.state.money}
+                                    onChange={(event) => this.handleOnchangeInput(event, 'money')}
+                                    disabled={this.props.role === 'R2' ? true : false}
+                                ></input>
+                            </div>
+                            <div className="form-group col-6">
+                                <label>Phone number</label>
+                                <input type="text" className="form-control"
+                                    value={this.state.phone}
+                                    onChange={(event) => this.handleOnchangeInput(event, 'phone')}
+                                    disabled={this.props.role === 'R2' ? true : false}
+                                ></input>
+                            </div>
+                            <div className="form-group col-6">
+                                <label>Team</label>
+                                <Select options={listTeam}
+                                    onChange={this.handleOnchangeSelectTeam}
+                                    name={'team'}
+                                    defaultValue={selectedTeam}
+                                    isDisabled={this.props.role === 'R2' ? true : false}
+                                />
+
+                            </div>
+                            <div className="form-group col-6">
+                                <label>Role</label>
+                                <Select
+                                    options={listRole}
+                                    onChange={this.handleOnchangeSelectRole}
+                                    name={'role'}
+                                    defaultValue={selectedRole}
+                                    isDisabled={this.props.role === 'R2' ? true : false}
+                                />
+
+                            </div>
+                            <div className="form-group col-6 my-3" >
+                                <label className='label-upload' htmlFor='previewImg'><i className="fa fa-camera"></i>Tải ảnh</label>
+                                <input className='preview-img-input form-control' id='previewImg' type='file'
+                                    style={{ display: "none" }}
+                                    onChange={(event) => this.handleOnchangImage(event)}
+                                    disabled={this.props.role === 'R2' ? true : false}
+                                />
+                                {
+                                    this.state.previewImgURL !== '' ?
+                                        <>
                                             <div className='preview-img'
-                                                style={{ backgroundImage: "url(" + `http://localhost:8080/upload-file/files/${image}` + ")" }}
+                                                style={{ backgroundImage: `url(${this.state.previewImgURL})` }}
                                                 onClick={() => this.openReviewImage()}
                                             >
                                             </div>
-                                        }
-                                    </>
-                            }
+                                        </>
+                                        :
+                                        <>
+                                            {image &&
+                                                <div className='preview-img'
+                                                    style={{ backgroundImage: "url(" + `http://localhost:8080/upload-file/files/${image}` + ")" }}
+                                                    onClick={() => this.openReviewImage()}
+                                                >
+                                                </div>
+                                            }
+                                        </>
+                                }
+                            </div>
                         </div>
-                    </div>
-                </ModalProps.Body>
-                <ModalProps.Footer>
-                    <button className='btn btn-primary' onClick={this.props.setModalShow}>CANCEL</button>
-                    <button className='btn btn-success' onClick={() => this.handleSubmit()}>SUBMIT</button>
-                </ModalProps.Footer>
-            </ModalProps>
-
+                    </ModalProps.Body>
+                    <ModalProps.Footer>
+                        <button className='btn btn-primary' onClick={this.props.setModalShow}>CANCEL</button>
+                        <button className='btn btn-success' onClick={() => this.handleSubmit()}>SUBMIT</button>
+                    </ModalProps.Footer>
+                </ModalProps>
+                <ModalUpdatePassWord
+                    modalShow={this.state.showModalUpdatePassWord}
+                    setModalShow={this.setModalShowUpdatePassword}
+                    roleId={this.props.role}
+                    oldPassWord={this.state.passWord}
+                    changePassWord={this.changePassWord}
+                />
+            </>
         )
     }
 }

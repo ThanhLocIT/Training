@@ -17,5 +17,5 @@ public class AdvancesRequest {
     private Long employeeId;
     private LocalDate date;
     private Long money;
-
+    private int status;
 }

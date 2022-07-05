@@ -4,7 +4,7 @@ import Moment from 'moment';
 import ModalAddWorking from './Modal/ModalAddWorking';
 import { emitter } from '../utils/emitter';
 import { toast } from 'react-toastify';
-import { getInforWorkingByEmployee, delWorkingById } from '../services/WorkingService';
+import { getInforWorkingByEmployee, delWorkingById, approvalWorking } from '../services/WorkingService';
 class Working extends React.Component {
     constructor(props) {
         super(props);
@@ -55,6 +55,21 @@ class Working extends React.Component {
         })
     }
 
+    handleApprovalWorking = async (id) => {
+        if (this.state.accessToken.role === 'R1') {
+            let approval = await approvalWorking(id)
+            if (approval === 0) {
+                toast.success("Approval working success !")
+                let res = await getInforWorkingByEmployee(this.state.idEmployee);
+                this.setState({
+                    inforWorking: res
+                })
+            } else {
+                toast.error("Approval working error !")
+            }
+        }
+    }
+
     render() {
         let { inforWorking, idEmployee, accessToken } = this.state
         const role = accessToken.role ? accessToken.role : ''
@@ -63,7 +78,7 @@ class Working extends React.Component {
                 <div className='container-infor-detail'>
                     <div className='hearder'>
                         <div className='title'>Working</div>
-                        {role === 'R1' && <div className='btn-add' onClick={() => this.setModalShow()}><i className="fa fa-plus-circle"></i></div>}
+                        <div className='btn-add' onClick={() => this.setModalShow()}><i className="fa fa-plus-circle"></i></div>
                     </div>
                     <div className='body'>
                         <div className='infor'>
@@ -73,6 +88,7 @@ class Working extends React.Component {
                                         <th scope="col">No</th>
                                         <th scope="col">Date</th>
                                         <th scope="col">Hour</th>
+                                        <th scope="col">Approval</th>
                                         {role === 'R1' && <th scope="col">Option</th>}
                                     </tr>
                                 </thead>
@@ -81,11 +97,11 @@ class Working extends React.Component {
                                         {inforWorking && inforWorking.length > 0 &&
                                             inforWorking.map((item, idex) => {
                                                 return (
-
                                                     <tr key={item.id}>
                                                         <td>{idex + 1}</td>
                                                         <td>{Moment(item.date).format('DD/MM/YYYY')}</td>
                                                         <td>{item.hour}</td>
+                                                        <td>{item.status === 1 ? <i className="fa fa-check" aria-hidden="true"></i> : <i className="fa fa-hourglass-half" aria-hidden="true" onClick={() => this.handleApprovalWorking(item.id)}></i>}</td>
                                                         {role === 'R1' && <td><i className="fa fa-trash" onClick={() => this.handleDeleteWorking(item.id)}></i></td>}
                                                     </tr>
 
@@ -103,6 +119,7 @@ class Working extends React.Component {
                     setModalShow={this.setModalShow}
                     idEmployee={idEmployee}
                     confirmAddWorking={this.confirmAddWorking}
+                    roleId={role}
                 />
             </>
         )

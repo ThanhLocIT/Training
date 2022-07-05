@@ -27,7 +27,6 @@ class InforEmployee extends React.Component {
             const params = new URLSearchParams(search);
             const id = params.get('id');
             let res = await getInforEmployeeServiceById(id)
-            console.log(res)
             this.setState({
                 accessToken: token,
                 id: id,

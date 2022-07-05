@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class ImplementAdvances implements AdvancesService {
@@ -71,4 +72,24 @@ public class ImplementAdvances implements AdvancesService {
         }
     }
 
+    @Override
+    public int approvalAdvance(Long id) {
+        try {
+            Optional<Advances> res = reAdvances.findById(id);
+            Advances advances1 = new Advances();
+                if (res != null ) {
+                    advances1.setId(res.get().getId());
+                    advances1.setEmployeeId(res.get().getEmployeeId());
+                    advances1.setDate(res.get().getDate());
+                    advances1.setMoney(res.get().getMoney());
+                    advances1.setStatus(1);
+                    reAdvances.save(advances1);
+                }else{
+                    return 1;
+                }
+            return 0;
+        } catch (Exception e) {
+            return -1;
+        }
+    }
 }

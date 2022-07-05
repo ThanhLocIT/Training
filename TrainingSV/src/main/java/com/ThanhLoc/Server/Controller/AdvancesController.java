@@ -2,7 +2,10 @@ package com.ThanhLoc.Server.Controller;
 
 import com.ThanhLoc.Server.ServiceEmployees.AdvancesService;
 import com.ThanhLoc.Server.domain.Advances;
+import com.ThanhLoc.Server.domain.Employees;
+import com.ThanhLoc.Server.domain.Team;
 import com.ThanhLoc.Server.payload.Request.AdvancesRequest;
+import com.ThanhLoc.Server.payload.Request.EmployeeRequest;
 import com.ThanhLoc.Server.payload.Response.MoneyAdvancesResponse;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -50,5 +53,15 @@ public class AdvancesController {
         MoneyAdvancesResponse a = new MoneyAdvancesResponse();
         a = svAdvances.getMoneyAdvances(id, month, year);
         return ResponseEntity.ok(a);
+    }
+
+    @RequestMapping(path = "/approval_advance", method = RequestMethod.GET)
+    public ResponseEntity<?> approvalAdvance (@RequestParam String id){
+        int result = svAdvances.approvalAdvance(Long.valueOf(id));
+
+        if(result == 0){
+            return ResponseEntity.ok(0);
+        }
+        return ResponseEntity.ok(-1);
     }
 }

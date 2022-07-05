@@ -9,13 +9,18 @@ const delAdvancesById = (id) => {
 }
 
 const insertAdvances = (data) => {
-    console.log(data)
     return axios.post(`/insert_advances`, data);
+}
+
+const approvalAdvance = (id) => {
+    console.log(id)
+    return axios.get(`/approval_advance?id=${id}`);
 }
 
 
 export {
     getInforAdvancesByEmployee,
     delAdvancesById,
-    insertAdvances
+    insertAdvances,
+    approvalAdvance
 }

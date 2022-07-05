@@ -63,6 +63,7 @@ class ModalAdvance extends React.Component {
                 employeeId: idEmployee,
                 date: this.state.date,
                 money: this.state.money,
+                status: this.props.roleId === 'R1' ? 1 : 0
             })
             if (res === 0) {
                 toast.success("Add new working success");

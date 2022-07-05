@@ -25,6 +25,7 @@ public class WorkingController {
         Working working = new Working();
 //        //copy property from source to em
         BeanUtils.copyProperties(dataWorking,working);
+        System.out.println(working.getStatus());
         boolean result = svWorking.insertWorking(working);
         if(result){
             return ResponseEntity.ok(0);
@@ -51,6 +52,14 @@ public class WorkingController {
         a = svWorking.getHourWorking(id, month, year);
         return ResponseEntity.ok(a);
     }
+    @RequestMapping(path = "/approval_working", method = RequestMethod.GET)
+    public ResponseEntity<?> approvalAdvance (@RequestParam String id){
+        int result = svWorking.approvalWorking(Long.valueOf(id));
 
+        if(result == 0){
+            return ResponseEntity.ok(0);
+        }
+        return ResponseEntity.ok(-1);
+    }
 
 }

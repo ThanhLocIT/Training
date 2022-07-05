@@ -13,5 +13,5 @@ public class WorkingResponse {
     private Long employeeId;
     private LocalDate date;
     private Long hour;
-
+    private int status;
 }

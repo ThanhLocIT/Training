@@ -15,4 +15,6 @@ public interface WorkingService {
     boolean deleteWorkingByEmployeeId(Long idEmployee) throws RuntimeException;
 
     HourWorkingResponse getHourWorking(Long id, int month, int year) throws RuntimeException;
+
+    int approvalWorking(Long id);
 }

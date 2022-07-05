@@ -1,6 +1,6 @@
 import React from 'react';
 import ModalAdvance from './Modal/ModalAdvance';
-import { getInforAdvancesByEmployee, delAdvancesById } from "../services/AdvancesService"
+import { getInforAdvancesByEmployee, delAdvancesById, approvalAdvance } from "../services/AdvancesService"
 import { emitter } from '../utils/emitter';
 import { toast } from 'react-toastify';
 import Moment from 'moment';
@@ -55,6 +55,23 @@ class Advance extends React.Component {
             inforAdvances: res
         })
     }
+
+    handleApprovalAdvance = async (id) => {
+        if (this.state.accessToken.role === 'R1') {
+            let approval = await approvalAdvance(id)
+            if (approval === 0) {
+                toast.success("Approval advance success !")
+                let res = await getInforAdvancesByEmployee(this.state.idEmployee);
+                this.setState({
+                    inforAdvances: res
+                })
+            } else {
+                toast.error("Approval advance error !")
+            }
+
+        }
+    }
+
     render() {
         let { inforAdvances, accessToken } = this.state;
         const role = accessToken.role ? accessToken.role : ''
@@ -63,7 +80,7 @@ class Advance extends React.Component {
                 <div className='container-infor-detail'>
                     <div className='hearder'>
                         <div className='title'>ADVANCES</div>
-                        {role === 'R1' && <div className='btn-add' onClick={() => this.setModalShow()}><i className="fa fa-plus-circle"></i></div>}
+                        <div className='btn-add' onClick={() => this.setModalShow()}><i className="fa fa-plus-circle"></i></div>
                     </div>
                     <div className='body'>
                         <div className='infor'>
@@ -73,6 +90,7 @@ class Advance extends React.Component {
                                         <th scope="col">No</th>
                                         <th scope="col">Date</th>
                                         <th scope="col">Money</th>
+                                        <th scope="col">Approval</th>
                                         {role === 'R1' && <th scope="col">Option</th>}
                                     </tr>
                                 </thead>
@@ -81,10 +99,11 @@ class Advance extends React.Component {
                                         {inforAdvances && inforAdvances.length > 0 &&
                                             inforAdvances.map((item, index) => {
                                                 return (
-                                                    <tr>
+                                                    <tr key={item.id}>
                                                         <td>{index + 1}</td>
                                                         <td>{Moment(item.date).format('DD/MM/YYYY')}</td>
                                                         <td>{item.money}</td>
+                                                        <td>{item.status === 1 ? <i className="fa fa-check" aria-hidden="true"></i> : <i className="fa fa-hourglass-half" aria-hidden="true" onClick={() => this.handleApprovalAdvance(item.id)}></i>}</td>
                                                         {role === 'R1' && <td><i className="fa fa-trash" onClick={() => this.handleDeleteAdvances(item.id)}></i></td>}
                                                     </tr>
                                                 )
@@ -100,6 +119,7 @@ class Advance extends React.Component {
                     modalShow={this.state.isShowModalAddAdvance}
                     setModalShow={this.setModalShow}
                     confirmAddAdvances={this.confirmAddAdvances}
+                    roleId={role}
                 />
             </>
         )

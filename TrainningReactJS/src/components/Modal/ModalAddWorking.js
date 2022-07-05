@@ -66,7 +66,8 @@ class ModalAddWorking extends React.Component {
             let res = await insertWorking({
                 employeeId: idEmployee,
                 date: this.state.date,
-                hour: this.state.hour
+                hour: this.state.hour,
+                status: this.props.roleId === 'R1' ? '1' : '0'
             })
             if (res === 0) {
                 toast.success("Add new working success");
