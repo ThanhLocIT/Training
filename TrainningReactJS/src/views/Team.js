@@ -51,7 +51,7 @@ class team extends React.Component {
     render() {
         let { totalTeam, listTeam, isShowModalAddTeam, teamDetailId, isShowDetail } = this.state
         const login = localStorage.getItem('isLogin');
-        if (login === 'false') {
+        if (login === 'false' || login === null) {
             return (
                 <Navigate to="../../login" replace={true} />
             )

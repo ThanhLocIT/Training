@@ -33,23 +33,22 @@ class EmployeeManager extends React.Component {
     }
 
     componentDidMount() {
-        const accessToken = JSON.parse(localStorage.getItem('accessToken'));
-        this.setState({
-            accessToken: accessToken
-        })
+        const token = JSON.parse(localStorage.getItem('accessToken'));
+        if (token) {
+            this.setState({
+                accessToken: token
+            })
+        }
         this.getAllEmployee(this.state.currentPage, this.state.sortSelected)
         this.getTotalEmployee();
     }
 
-    componentDidUpdate(prevProps, prevState, snapshot) {
-
-    }
 
     getAllEmployee = async (currentPage, sort) => {
-        const accessToken = JSON.parse(localStorage.getItem('accessToken'));
-        if (accessToken && accessToken.role && accessToken.role === 'R2') {
+        const token = JSON.parse(localStorage.getItem('accessToken'));
+        if (token && token.length > 0 && token.role !== null && token.role === 'R2') {
             let arr = [];
-            arr.push(accessToken)
+            arr.push(token)
             this.setState({
                 listEmployees: arr
             })
@@ -353,9 +352,9 @@ class EmployeeManager extends React.Component {
     render() {
 
         let { totalPage, listEmployees, delAll, modalConfirmDel, accessToken, sort, sortSelected } = this.state;
-        const role = accessToken.role ? accessToken.role : ''
+        const role = accessToken && accessToken.role !== null ? accessToken.role : ''
         const login = localStorage.getItem('isLogin');
-        if (login === 'false') {
+        if (login === 'false' || login === null) {
             return (
                 <Navigate to="../../login" replace={true} />
             )

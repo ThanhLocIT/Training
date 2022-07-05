@@ -82,7 +82,7 @@ class InforEmployee extends React.Component {
         const login = localStorage.getItem('isLogin');
         let { accessToken } = this.state
         const role = accessToken.role ? accessToken.role : ''
-        if (login === 'false') {
+        if (login === 'false' || login === null) {
             return (
                 <Navigate to="../../login" replace={true} />
             )

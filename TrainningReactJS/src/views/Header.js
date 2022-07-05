@@ -15,10 +15,12 @@ class Header extends React.Component {
         this.setState({
             btnActive: active
         })
-        const accessToken = JSON.parse(localStorage.getItem('accessToken'));
-        this.setState({
-            accessToken: accessToken
-        })
+        const token = JSON.parse(localStorage.getItem('accessToken'));
+        if (token !== null) {
+            this.setState({
+                accessToken: token
+            })
+        }
     }
 
     btnActive = (active) => {
