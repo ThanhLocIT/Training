@@ -1,4 +1,5 @@
 import './App.css';
+import React from 'react';
 import EmployeeManager from './views/EmployeeManager'
 import InforEmployee from './views/InforEmployee'
 import Login from './views/Login'
@@ -10,7 +11,6 @@ import Team from './views/Team'
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { Routes, Route, Navigate } from 'react-router-dom';
-//import { ConnectedRouter as Router } from 'connected-react-router';
 function App() {
   return (
     <>
