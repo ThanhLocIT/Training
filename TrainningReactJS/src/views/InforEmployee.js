@@ -20,18 +20,21 @@ class InforEmployee extends React.Component {
     }
 
     async componentDidMount() {
-        const accessToken = JSON.parse(localStorage.getItem('accessToken'));
-        const search = window.location.search;
-        let active = (window.location.href).slice((window.location.href).lastIndexOf("/") + 1, (window.location.href).lastIndexOf("?"));
-        const params = new URLSearchParams(search);
-        const id = params.get('id');
-        let res = await getInforEmployeeServiceById(id)
-        this.setState({
-            accessToken: accessToken,
-            id: id,
-            link_active: active,
-            inforEmployee: res
-        })
+        const token = JSON.parse(localStorage.getItem('accessToken'));
+        if (token.role) {
+            const search = window.location.search;
+            let active = (window.location.href).slice((window.location.href).lastIndexOf("/") + 1, (window.location.href).lastIndexOf("?"));
+            const params = new URLSearchParams(search);
+            const id = params.get('id');
+            let res = await getInforEmployeeServiceById(id)
+            console.log(res)
+            this.setState({
+                accessToken: token,
+                id: id,
+                link_active: active,
+                inforEmployee: res
+            })
+        }
     }
 
     linkActive = (active) => {
