@@ -46,7 +46,7 @@ class EmployeeManager extends React.Component {
 
     getAllEmployee = async (currentPage, sort) => {
         const token = JSON.parse(localStorage.getItem('accessToken'));
-        if (token && token.length > 0 && token.role !== null && token.role === 'R2') {
+        if (token && token.role !== null && token.role === 'R2') {
             let arr = [];
             arr.push(token)
             this.setState({
@@ -284,7 +284,7 @@ class EmployeeManager extends React.Component {
 
     }
 
-    hanldeCheckDelAll = async (event) => {
+    handleCheckDelAll = async (event) => {
         if (event.target.checked) {
             let stateDelEmployeeCopy = []
             this.setState({
@@ -410,7 +410,7 @@ class EmployeeManager extends React.Component {
                                     <tr>
                                         {role === 'R1' &&
                                             <th>
-                                                <input type="checkbox" onChange={(event) => this.hanldeCheckDelAll(event)} />
+                                                <input type="checkbox" onChange={(event) => this.handleCheckDelAll(event)} />
                                             </th>
                                         }
                                         <th scope="col">No</th>
