@@ -36,9 +36,9 @@ class ModalUpSertEmployee extends React.Component {
             selectedSex: '',
             selectedRole: '',
             listSex: [
-                { value: 'male', label: 'Male' },
-                { value: 'female', label: 'FeMale' },
-                { value: 'other', label: 'Other' }
+                { value: 'Male', label: 'Male' },
+                { value: 'Female', label: 'FeMale' },
+                { value: 'Other', label: 'Other' }
             ],
             listRole: [
                 { value: 'R1', label: 'Admin' },

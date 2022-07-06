@@ -5,6 +5,8 @@ import Header from './Header';
 import ModalConfirmDel from '../components/Modal/ModalConfirmDel';
 import { Navigate } from 'react-router-dom';
 import { getInforEmployeeService, getEmployeeByNameService, DelListEmployeeService, getEmployeeService, DelEmployeeService, totalEmployeeByNameService } from '../services/EmloyeesService';
+import { getInforAdvancesByEmployee } from '../services/AdvancesService'
+import { approvalWorking, getInforWorkingByEmployee } from '../services/WorkingService'
 import { toast } from 'react-toastify';
 import { emitter } from '../utils/emitter';
 import { Link } from 'react-router-dom';
@@ -15,6 +17,7 @@ class EmployeeManager extends React.Component {
             accessToken: {},
             listEmployees: [],
             idEmployeeDel: [],
+            waitingApproval: [],
             modalShow: false,
             currentPage: 1,
             totalPage: [],
@@ -44,11 +47,40 @@ class EmployeeManager extends React.Component {
     }
 
 
+    checkWaitingApproval = async (id) => {
+        let res1 = await getInforWorkingByEmployee(id);
+        let arrApproval = this.state.waitingApproval
+        if (res1.length > 0) {
+            res1.forEach(element => {
+                if (element.status === 0) {
+                    if (!arrApproval.includes(element.employeeId)) {
+                        arrApproval.push(element.employeeId)
+                    }
+                }
+            });
+        }
+        let res2 = await getInforAdvancesByEmployee(id);
+        if (res2.length > 0) {
+            res2.forEach(element => {
+                if (element.status === 0) {
+                    if (!arrApproval.includes(element.employeeId)) {
+                        arrApproval.push(element.employeeId)
+                    }
+                }
+            });
+        }
+        this.setState({
+            waitingApproval: arrApproval
+        })
+    }
+
+
     getAllEmployee = async (currentPage, sort) => {
         const token = JSON.parse(localStorage.getItem('accessToken'));
         if (token && token.role !== null && token.role === 'R2') {
             let arr = [];
             arr.push(token)
+            this.checkWaitingApproval(arr[0].id)
             this.setState({
                 listEmployees: arr
             })
@@ -56,6 +88,11 @@ class EmployeeManager extends React.Component {
             let res = await getEmployeeService(currentPage, sort);
             if (res === -1) {
                 res = []
+            } else {
+                res.map((item) => {
+                    this.checkWaitingApproval(item.id)
+                    return true
+                })
             }
             this.setState({
                 listEmployees: res
@@ -350,8 +387,7 @@ class EmployeeManager extends React.Component {
     }
 
     render() {
-
-        let { totalPage, listEmployees, delAll, modalConfirmDel, accessToken, sort, sortSelected } = this.state;
+        let { totalPage, listEmployees, delAll, modalConfirmDel, accessToken, sort, sortSelected, waitingApproval } = this.state;
         const role = accessToken && accessToken.role !== null ? accessToken.role : ''
         const login = localStorage.getItem('isLogin');
         if (login === 'false' || login === null) {
@@ -418,29 +454,35 @@ class EmployeeManager extends React.Component {
                                         <th scope="col">Phone</th>
                                         <th scope="col">Team</th>
                                         <th scope="col">Option</th>
+                                        <th scope="col">Waiting Approval</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     {listEmployees && listEmployees.length > 0 &&
-                                        listEmployees.map((elenment, index) => {
+                                        listEmployees.map((element, index) => {
                                             return (
-                                                <tr key={`${delAll}${elenment.id}`}>
+                                                <tr key={`${delAll}${element.id}`}>
                                                     {role === 'R1' &&
                                                         <td><input type="checkbox"
                                                             onChange={(event) => this.handleOnchangeCheckbox(event)}
-                                                            value={elenment.id}
+                                                            value={element.id}
                                                             defaultChecked={delAll}
 
                                                         /></td>
                                                     }
                                                     <td>{index + 1}</td>
-                                                    <td>{elenment.fullName}</td>
-                                                    <td>{elenment.phone}</td>
-                                                    <td>{elenment.teamName}</td>
+                                                    <td>{element.fullName}</td>
+                                                    <td>{element.phone}</td>
+                                                    <td>{element.teamName}</td>
                                                     <td>
-                                                        <Link to={`/employee/employee-infor/infor?id=${elenment.id}`}><i className="fa fa-info"></i></Link>
-                                                        {role === 'R1' && <i className="fa fa-trash" onClick={() => this.handleDelEmployee(elenment.id)} ></i>}
+                                                        <Link to={`/employee/employee-infor/infor?id=${element.id}`}><i className="fa fa-info"></i></Link>
+                                                        {role === 'R1' && <i className="fa fa-trash" onClick={() => this.handleDelEmployee(element.id)} ></i>}
                                                     </td>
+                                                    {waitingApproval.indexOf(element.id) === 0 ?
+                                                        <td><i className="fa fa-hourglass-half" aria-hidden="true"></i></td>
+                                                        :
+                                                        <td>No</td>
+                                                    }
                                                 </tr>
                                             )
                                         })

@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Jun 23, 2022 at 01:01 PM
+-- Generation Time: Jul 06, 2022 at 05:37 AM
 -- Server version: 10.4.24-MariaDB
 -- PHP Version: 8.1.6
 
@@ -31,15 +31,17 @@ CREATE TABLE `advances` (
   `id` bigint(20) NOT NULL,
   `date` date DEFAULT NULL,
   `employee_id` bigint(20) NOT NULL,
-  `money` bigint(20) DEFAULT NULL
+  `money` bigint(20) DEFAULT NULL,
+  `status` int(255) DEFAULT NULL
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4;
 
 --
 -- Dumping data for table `advances`
 --
 
-INSERT INTO `advances` (`id`, `date`, `employee_id`, `money`) VALUES
-(11, '2022-06-09', 9, 12);
+INSERT INTO `advances` (`id`, `date`, `employee_id`, `money`, `status`) VALUES
+(20, '2022-07-15', 12, 23, 0),
+(18, '2022-07-06', 12, 12, 1);
 
 -- --------------------------------------------------------
 
@@ -67,8 +69,9 @@ CREATE TABLE `employees` (
 --
 
 INSERT INTO `employees` (`id`, `address`, `age`, `day`, `full_name`, `image`, `money`, `pass_word`, `phone`, `role`, `sex`, `team_id`) VALUES
-(2, 'abc', 12, '2022-05-31', 'admin', '', 12, '202cb962ac59075b964b07152d234b70', '0941466330', 'R1', 'female', 1),
-(9, 'bac lieu', 12, '2022-06-20', 'Thanh Loc', 'bcd13f4559384eff8ec23bd2b8bec56c.jpg', 12, '202cb962ac59075b964b07152d234b70', '0941466333', 'R2', 'male', 1);
+(1, 'Bạc Liêu', 22, '2022-05-10', 'Thành Lộc', NULL, 20, '202cb962ac59075b964b07152d234b70', '0941466330', 'R1', 'Male', 1),
+(12, 'Bạc Liêu', 20, '2022-07-06', 'Khang Anh', 'cb03de0945164086ab82d2d8af85684a.png', 32, '202cb962ac59075b964b07152d234b70', '0941466331', 'R2', 'Male', 1),
+(14, 'Cần Thơ', 34, '2022-07-19', 'Tuấn Khải', '1cfb750b7b7b4d128da52543b7528b64.jpg', 30, '202cb962ac59075b964b07152d234b70', '0941466332', 'R2', 'Other', 13);
 
 -- --------------------------------------------------------
 
@@ -85,7 +88,7 @@ CREATE TABLE `hibernate_sequence` (
 --
 
 INSERT INTO `hibernate_sequence` (`next_val`) VALUES
-(12);
+(21);
 
 -- --------------------------------------------------------
 
@@ -103,7 +106,9 @@ CREATE TABLE `team` (
 --
 
 INSERT INTO `team` (`id`, `name`) VALUES
-(1, 'dev');
+(1, 'Dev'),
+(13, 'Test'),
+(15, 'Design');
 
 -- --------------------------------------------------------
 
@@ -115,15 +120,18 @@ CREATE TABLE `working` (
   `id` bigint(20) NOT NULL,
   `date` date DEFAULT NULL,
   `employee_id` bigint(20) NOT NULL,
-  `hour` bigint(20) DEFAULT NULL
+  `hour` bigint(20) DEFAULT NULL,
+  `status` int(255) DEFAULT NULL
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4;
 
 --
 -- Dumping data for table `working`
 --
 
-INSERT INTO `working` (`id`, `date`, `employee_id`, `hour`) VALUES
-(10, '2022-06-24', 9, 12);
+INSERT INTO `working` (`id`, `date`, `employee_id`, `hour`, `status`) VALUES
+(19, '2022-07-15', 12, 8, 0),
+(17, '2022-07-07', 12, 12, 1),
+(16, '2022-07-07', 14, 12, 1);
 
 --
 -- Indexes for dumped tables

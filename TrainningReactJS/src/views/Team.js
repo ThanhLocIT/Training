@@ -13,7 +13,7 @@ class team extends React.Component {
             totalTeam: 0,
             listTeam: [],
             teamDetailId: '',
-            isShowDetail: false,
+            isShowDetail: true,
             isShowModalAddTeam: false
         }
     }
@@ -35,9 +35,14 @@ class team extends React.Component {
 
     async componentDidMount() {
         let res = await getTeamService()
+        let defaultTeamDetail = ''
+        if (res && res.listTeam) {
+            defaultTeamDetail = res.listTeam[0].id
+        }
         this.setState({
             totalTeam: res.totalItem,
-            listTeam: res.listTeam
+            listTeam: res.listTeam,
+            teamDetailId: defaultTeamDetail,
         })
     }
 
@@ -98,7 +103,7 @@ class team extends React.Component {
                             </div>
                             <div className='right'>
                                 {teamDetailId !== '' &&
-                                    < TeamDetail
+                                    <TeamDetail
                                         isShowDetail={isShowDetail}
                                         id={teamDetailId}
                                     />

@@ -12,5 +12,5 @@ public interface RepositoryAdvances extends JpaRepository<Advances,Long> {
     MoneyAdvancesResponse getMoneyAdvances(Long id, int month, int year);
 
     List<Advances> findAllByEmployeeId(Long id);
-
+    
 }
